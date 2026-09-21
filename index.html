@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0284c7">
+  <meta name="description" content="2026 제주 대학생 걷기대회 부지런 현장 안내 웹앱 — 부스 배치도, 타임테이블, QR 거북이 도장판">
+  <title>부지런 2026</title>
+  <style>
+    :root {
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --primary-light: #e0f2fe;
+      --teal: #0d9488;
+      --eco: #10b981;
+      --eco-dark: #047857;
+      --eco-light: #ecfdf5;
+      --orange: #f97316;
+      --orange-light: #fff7ed;
+      --yellow: #fef08a;
+      --ink: #0f172a;
+      --text: #1e293b;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --radius-sm: 10px;
+      --radius-md: 14px;
+      --radius-lg: 22px;
+      --shadow-sm: 0 1px 2px rgb(15 23 42 / .06);
+      --shadow-md: 0 6px 16px -6px rgb(15 23 42 / .18);
+      --nav-h: 64px;
+      --safe-b: env(safe-area-inset-bottom, 0px);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html { background: #0f172a; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", "Malgun Gothic", sans-serif;
+      color: var(--text);
+      line-height: 1.5;
+      word-break: keep-all;
+      background: #0f172a;
+      -webkit-font-smoothing: antialiased;
+    }
+    [hidden] { display: none !important; }
+    button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+    a { color: inherit; }
+    :focus-visible { outline: 3px solid #38bdf8; outline-offset: 2px; border-radius: 6px; }
+
+    /* ---------- App frame ---------- */
+    .app {
+      position: relative;
+      max-width: 430px;
+      min-height: 100vh;
+      min-height: 100dvh;
+      margin: 0 auto;
+      background: var(--bg);
+      box-shadow: 0 25px 60px -12px rgb(0 0 0 / .55);
+      overflow-x: hidden;
+    }
+
+    /* ---------- Top bar ---------- */
+    .topbar {
+      position: sticky; top: 0; z-index: 40;
+      height: 56px;
+      display: flex; align-items: center; gap: 8px;
+      padding: 0 12px;
+      padding-top: env(safe-area-inset-top, 0px);
+      height: calc(56px + env(safe-area-inset-top, 0px));
+      background: rgb(255 255 255 / .94);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+    .topbar-back {
+      width: 40px; height: 40px; border-radius: 12px;
+      display: none; align-items: center; justify-content: center;
+      color: var(--ink);
+    }
+    .topbar-back:active { background: #f1f5f9; }
+    .topbar-back svg { width: 22px; height: 22px; }
+    .app[data-route]:not([data-route="home"]) .topbar-back { display: flex; }
+    .topbar-logo { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 16px; color: var(--primary); }
+    .topbar-logo .tag {
+      background: var(--eco-light); color: #059669; border: 1px solid #a7f3d0;
+      font-size: 10.5px; font-weight: 700; padding: 1px 7px; border-radius: 999px;
+    }
+    .topbar-title { font-size: 16.5px; font-weight: 800; color: var(--ink); display: none; }
+    .app:not([data-route="home"]) .topbar-logo { display: none; }
+    .app:not([data-route="home"]) .topbar-title { display: block; }
+    .topbar-insta {
+      margin-left: auto; display: flex; align-items: center; gap: 4px;
+      font-size: 12px; font-weight: 700; color: #dc2743; text-decoration: none;
+      padding: 8px 6px;
+    }
+    .topbar-insta svg { width: 15px; height: 15px; fill: currentColor; }
+
+    /* ---------- Screens ---------- */
+    .screen {
+      display: none;
+      padding: 16px 16px calc(var(--nav-h) + var(--safe-b) + 28px);
+      animation: screen-in .28s ease-out;
+    }
+    .screen.active { display: block; }
+    @keyframes screen-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    .stack { display: flex; flex-direction: column; gap: 14px; }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      box-shadow: var(--shadow-sm);
+    }
+    .screen-lead { font-size: 13px; color: var(--muted); margin: -2px 2px 2px; }
+    .h-sub { font-size: 12px; font-weight: 800; color: var(--muted); letter-spacing: .3px; margin: 6px 2px 0; display: flex; align-items: center; gap: 6px; }
+
+    /* ---------- Poster (home hero) ---------- */
+    .poster {
+      position: relative; overflow: hidden;
+      background: linear-gradient(145deg, #0284c7 0%, #06b6d4 50%, #10b981 100%);
+      color: #fff; text-align: center;
+      border-radius: var(--radius-lg);
+      padding: 22px 18px 18px;
+      box-shadow: var(--shadow-md);
+    }
+    .poster-wave { position: absolute; top: -26px; right: -26px; width: 180px; opacity: .15; pointer-events: none; color: #fff; }
+    .poster-wave.b { top: auto; right: auto; bottom: -60px; left: -50px; width: 200px; opacity: .1; }
+    .poster-badge {
+      display: inline-block; background: rgb(255 255 255 / .22); border: 1px solid rgb(255 255 255 / .4);
+      padding: 4px 12px; border-radius: 999px; font-size: 11.5px; font-weight: 700; margin-bottom: 10px;
+    }
+    .poster-slogan { font-size: 13.5px; font-weight: 600; opacity: .95; letter-spacing: -.3px; margin-bottom: 4px; }
+    .poster-title { font-size: 27px; font-weight: 900; line-height: 1.22; letter-spacing: -.6px; text-shadow: 0 2px 4px rgb(0 0 0 / .15); margin-bottom: 8px; }
+    .mascot { width: 112px; height: 112px; margin: 0 auto 12px; filter: drop-shadow(0 8px 12px rgb(0 0 0 / .18)); animation: bob 2.6s ease-in-out infinite alternate; }
+    @keyframes bob { from { transform: translateY(0) rotate(-1deg); } to { transform: translateY(-7px) rotate(2deg); } }
+    .poster-meta {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px 10px;
+      background: rgb(0 0 0 / .18); border-radius: var(--radius-sm);
+      padding: 11px; font-size: 12px; text-align: left;
+    }
+    .poster-meta div { display: flex; gap: 6px; align-items: flex-start; line-height: 1.35; }
+    .poster-meta strong { color: var(--yellow); margin-right: 3px; }
+
+    /* ---------- Home progress + menu ---------- */
+    .progress-card {
+      display: flex; align-items: center; gap: 12px; width: 100%; text-align: left;
+      background: linear-gradient(180deg, #f0fdf4 0%, #e0f2fe 100%);
+      border: 1.5px solid #a7f3d0; border-radius: var(--radius-md); padding: 14px;
+    }
+    .progress-card:active { transform: scale(.99); }
+    .progress-card .pc-text { flex: 1; min-width: 0; }
+    .progress-card .pc-title { font-size: 14px; font-weight: 800; color: var(--eco-dark); }
+    .progress-card .pc-title b { color: var(--orange); font-size: 16px; }
+    .progress-card .pc-desc { font-size: 12px; color: #334155; }
+    .pc-dots { display: flex; gap: 5px; margin-top: 7px; }
+    .pc-dots i { width: 100%; height: 6px; border-radius: 3px; background: #cbd5e1; }
+    .pc-dots i.on { background: var(--eco); }
+    .pc-go { flex-shrink: 0; font-size: 12px; font-weight: 800; color: #fff; background: var(--eco); padding: 8px 11px; border-radius: 10px; }
+
+    .now-chip {
+      display: flex; align-items: center; gap: 10px; width: 100%; text-align: left;
+      background: var(--orange-light); border: 1px solid #fed7aa; border-radius: var(--radius-md); padding: 12px 14px;
+    }
+    .now-chip .live { width: 9px; height: 9px; border-radius: 50%; background: var(--orange); flex-shrink: 0; box-shadow: 0 0 0 0 rgb(249 115 22 / .6); animation: pulse 1.6s infinite; }
+    @keyframes pulse { 70% { box-shadow: 0 0 0 8px rgb(249 115 22 / 0); } 100% { box-shadow: 0 0 0 0 rgb(249 115 22 / 0); } }
+    .now-chip .nc-label { font-size: 11px; font-weight: 800; color: #c2410c; }
+    .now-chip .nc-title { font-size: 13.5px; font-weight: 700; color: var(--ink); }
+
+    .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .menu-tile {
+      position: relative;
+      display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
+      background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-md);
+      padding: 15px 14px 14px; text-align: left; min-height: 108px;
+      box-shadow: var(--shadow-sm); transition: transform .15s, border-color .15s;
+    }
+    .menu-tile:active { transform: scale(.97); border-color: var(--primary); }
+    .menu-tile .mt-icon {
+      width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 21px;
+      background: var(--primary-light);
+    }
+    .menu-tile.eco .mt-icon { background: var(--eco-light); }
+    .menu-tile.org .mt-icon { background: var(--orange-light); }
+    .menu-tile .mt-title { font-size: 14.5px; font-weight: 800; color: var(--ink); }
+    .menu-tile .mt-desc { font-size: 11.5px; color: var(--muted); line-height: 1.35; }
+    .menu-tile.wide { grid-column: 1 / -1; flex-direction: row; align-items: center; min-height: 0; gap: 12px;
+      background: var(--ink); border-color: var(--ink); color: #fff; }
+    .menu-tile.wide .mt-icon { background: rgb(255 255 255 / .12); }
+    .menu-tile.wide .mt-title { color: #fff; }
+    .menu-tile.wide .mt-desc { color: #cbd5e1; }
+    .menu-tile .mt-badge {
+      position: absolute; top: 12px; right: 12px; background: var(--orange); color: #fff;
+      font-size: 11px; font-weight: 800; padding: 1px 7px; border-radius: 999px;
+    }
+
+    /* ---------- Info ---------- */
+    .fact-list { display: flex; flex-direction: column; }
+    .fact { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px dashed var(--line); font-size: 13.5px; }
+    .fact:last-child { border-bottom: 0; }
+    .fact dt { width: 58px; flex-shrink: 0; font-weight: 800; color: var(--primary-dark); }
+    .fact dd { color: var(--text); }
+    .info-box { border-left: 4px solid var(--primary); padding-left: 12px; }
+    .info-box.eco { border-left-color: var(--eco); }
+    .info-title { font-size: 15px; font-weight: 800; color: var(--ink); margin-bottom: 4px; }
+    .info-box.eco .info-title { color: var(--eco-dark); }
+    .info-desc { font-size: 13px; color: #475569; line-height: 1.6; }
+    .eco-list { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+    .eco-item { display: flex; gap: 10px; align-items: flex-start; background: var(--eco-light); border: 1px solid #d1fae5; border-radius: var(--radius-sm); padding: 11px 12px; }
+    .eco-item .ei { font-size: 19px; flex-shrink: 0; line-height: 1.2; }
+    .eco-item h4 { font-size: 13px; font-weight: 800; color: var(--eco-dark); margin-bottom: 2px; }
+    .eco-item p { font-size: 12px; color: #334155; line-height: 1.45; }
+    .rule-list { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+    .rule-list li { display: flex; gap: 8px; font-size: 13px; color: #334155; }
+    .rule-list li::before { content: "›"; color: var(--primary); font-weight: 900; }
+    .insta-btn {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+      color: #fff; text-decoration: none; padding: 15px; border-radius: var(--radius-md);
+      font-size: 14px; font-weight: 800; box-shadow: 0 4px 12px rgb(220 39 67 / .35);
+    }
+    .insta-btn:active { transform: scale(.98); }
+    .insta-btn svg { width: 20px; height: 20px; fill: currentColor; }
+
+    /* ---------- Booths ---------- */
+    .chip-row { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 0 16px 2px; }
+    .chip-row::-webkit-scrollbar { display: none; }
+    .chip {
+      flex-shrink: 0; padding: 7px 13px; font-size: 12.5px; font-weight: 700; border-radius: 999px;
+      border: 1px solid var(--line); background: #fff; color: var(--muted); white-space: nowrap;
+    }
+    .chip.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .ground {
+      background: #f1f5f9; border: 2px dashed #cbd5e1; border-radius: var(--radius-md);
+      padding: 14px 12px; display: flex; flex-direction: column; gap: 10px;
+    }
+    .zone-label { font-size: 11.5px; font-weight: 800; color: #475569; display: flex; gap: 6px; align-items: center; }
+    .booth-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .booth {
+      position: relative; display: flex; flex-direction: column; gap: 3px; text-align: left;
+      background: #fff; border: 1.5px solid var(--line); border-radius: var(--radius-sm); padding: 10px;
+      transition: border-color .15s, background .15s, transform .15s;
+    }
+    .booth:active, .booth.selected { border-color: var(--primary); background: #f0f9ff; transform: translateY(-2px); }
+    .booth.hidden { display: none; }
+    .booth.stage { grid-column: 1 / -1; background: #fefce8; border-color: #fde68a; }
+    .num {
+      display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 22px; padding: 0 5px;
+      background: var(--primary); color: #fff; font-size: 11.5px; font-weight: 800; border-radius: 6px;
+    }
+    .booth .num { align-self: flex-start; }
+    .num.eco { background: var(--eco); }
+    .num.org { background: var(--orange); }
+    .booth-name { font-size: 13px; font-weight: 800; color: var(--text); line-height: 1.3; margin-top: 2px; }
+    .booth-desc { font-size: 11.5px; color: var(--muted); line-height: 1.3; }
+    .booth-stamp { position: absolute; top: 8px; right: 8px; font-size: 10px; font-weight: 800; color: var(--eco-dark);
+      background: var(--eco-light); border: 1px solid #a7f3d0; padding: 1px 6px; border-radius: 999px; }
+    .booth-stamp.done { background: var(--eco); color: #fff; border-color: var(--eco); }
+    .legend { display: flex; flex-wrap: wrap; gap: 10px; font-size: 11.5px; color: var(--muted); }
+    .legend span { display: flex; align-items: center; gap: 5px; }
+    .legend i { width: 10px; height: 10px; border-radius: 3px; background: var(--primary); }
+    .legend i.eco { background: var(--eco); } .legend i.org { background: var(--orange); }
+
+    /* ---------- Bottom sheet & modal ---------- */
+    .scrim {
+      position: fixed; inset: 0; z-index: 80; background: rgb(15 23 42 / .5);
+      display: flex; align-items: flex-end; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity .2s;
+    }
+    .scrim.open { opacity: 1; pointer-events: auto; }
+    .sheet {
+      width: 100%; max-width: 430px; background: #fff; border-radius: 22px 22px 0 0;
+      padding: 10px 18px calc(22px + var(--safe-b));
+      transform: translateY(100%); transition: transform .28s cubic-bezier(.2, .9, .3, 1);
+      max-height: 85vh; overflow-y: auto;
+    }
+    .scrim.open .sheet { transform: none; }
+    .sheet-grip { width: 40px; height: 4px; border-radius: 2px; background: #cbd5e1; margin: 0 auto 14px; }
+    .sheet-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .sheet-head .num { min-width: 30px; height: 30px; font-size: 14px; border-radius: 8px; }
+    .sheet-title { font-size: 17px; font-weight: 900; color: var(--ink); line-height: 1.3; }
+    .sheet-cat { display: inline-block; font-size: 11px; font-weight: 700; background: #dbeafe; color: #1d4ed8; padding: 2px 8px; border-radius: 6px; margin-bottom: 10px; }
+    .sheet-desc { font-size: 14px; color: #334155; line-height: 1.6; }
+    .sheet-mission { margin-top: 14px; background: var(--eco-light); border: 1px solid #a7f3d0; border-radius: var(--radius-sm); padding: 12px; }
+    .sheet-mission h5 { font-size: 13px; font-weight: 800; color: var(--eco-dark); margin-bottom: 3px; }
+    .sheet-mission p { font-size: 12.5px; color: #334155; }
+    .btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
+      padding: 14px; border-radius: 12px; font-size: 14.5px; font-weight: 800;
+      background: var(--primary); color: #fff;
+    }
+    .btn:active { transform: scale(.98); }
+    .btn.eco { background: var(--eco); }
+    .btn.ghost { background: #f1f5f9; color: var(--text); }
+    .btn.dark { background: var(--ink); }
+    .btn svg { width: 20px; height: 20px; }
+    .btn-row { display: flex; gap: 8px; margin-top: 16px; }
+
+    .scrim.center { align-items: center; padding: 20px; }
+    .modal {
+      width: 100%; max-width: 360px; background: #fff; border-radius: 22px; padding: 26px 20px 20px; text-align: center;
+      transform: scale(.9); transition: transform .25s cubic-bezier(.34, 1.56, .64, 1);
+    }
+    .scrim.open .modal { transform: none; }
+    .modal-title { font-size: 19px; font-weight: 900; color: var(--ink); margin: 14px 0 6px; }
+    .modal-desc { font-size: 13.5px; color: #475569; line-height: 1.55; }
+
+    /* Rubber stamp mark */
+    .stamp-mark {
+      width: 108px; height: 108px; margin: 0 auto; border-radius: 50%;
+      border: 4px solid var(--eco-dark); color: var(--eco-dark);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      position: relative; transform: rotate(-12deg);
+      background: radial-gradient(circle, rgb(16 185 129 / .1) 0 60%, transparent 61%);
+    }
+    .stamp-mark::before { content: ""; position: absolute; inset: 5px; border-radius: 50%; border: 1.5px dashed currentColor; opacity: .7; }
+    .stamp-mark .sm-emoji { font-size: 34px; line-height: 1; }
+    .stamp-mark .sm-text { font-size: 11px; font-weight: 900; letter-spacing: 1px; margin-top: 3px; }
+    .stamp-mark.pop { animation: stamp-slam .45s cubic-bezier(.2, 1.4, .4, 1) both; }
+    .stamp-mark.warn { border-color: #b45309; color: #b45309; background: radial-gradient(circle, rgb(251 191 36 / .15) 0 60%, transparent 61%); }
+    .stamp-mark.err { border-color: #b91c1c; color: #b91c1c; background: radial-gradient(circle, rgb(239 68 68 / .1) 0 60%, transparent 61%); }
+    @keyframes stamp-slam {
+      0% { transform: scale(2.2) rotate(-30deg); opacity: 0; }
+      60% { transform: scale(.92) rotate(-10deg); opacity: 1; }
+      100% { transform: scale(1) rotate(-12deg); }
+    }
+
+    /* ---------- Timetable ---------- */
+    .seg { display: flex; gap: 6px; background: #f1f5f9; padding: 4px; border-radius: 12px; }
+    .seg button { flex: 1; padding: 8px 0; font-size: 12.5px; font-weight: 800; border-radius: 9px; color: var(--muted); }
+    .seg button.active { background: var(--ink); color: #fff; }
+    .timeline { position: relative; padding-left: 22px; display: flex; flex-direction: column; gap: 12px; }
+    .timeline::before { content: ""; position: absolute; top: 8px; bottom: 8px; left: 7px; width: 2px; background: #cbd5e1; }
+    .tl-item { position: relative; background: #fff; border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 11px 13px; }
+    .tl-item.hidden { display: none; }
+    .tl-item::before {
+      content: ""; position: absolute; left: -20px; top: 15px; width: 10px; height: 10px; border-radius: 50%;
+      background: #94a3b8; border: 2px solid #fff; box-shadow: 0 0 0 2px #cbd5e1;
+    }
+    .tl-item.highlight::before { background: var(--orange); box-shadow: 0 0 0 2px #fdba74; }
+    .tl-item.now { border-color: var(--orange); box-shadow: 0 0 0 3px rgb(249 115 22 / .15); }
+    .tl-item.past { opacity: .55; }
+    .tl-time { display: inline-block; font-size: 11.5px; font-weight: 800; color: var(--primary); background: var(--primary-light); padding: 2px 7px; border-radius: 5px; margin-bottom: 4px; }
+    .tl-now { display: none; margin-left: 6px; font-size: 11px; font-weight: 800; color: #fff; background: var(--orange); padding: 2px 7px; border-radius: 5px; }
+    .tl-item.now .tl-now { display: inline-block; }
+    .tl-title { font-size: 14px; font-weight: 800; color: var(--text); margin-bottom: 2px; }
+    .tl-desc { font-size: 12.5px; color: var(--muted); line-height: 1.45; }
+
+    /* ---------- Stamp race ---------- */
+    .race { background: linear-gradient(180deg, #f0fdf4 0%, #e0f2fe 100%); border: 1.5px solid #a7f3d0; }
+    .race-head { display: flex; align-items: center; justify-content: space-between; }
+    .race-count { font-size: 14px; font-weight: 800; color: var(--eco-dark); }
+    .race-count b { color: var(--orange); font-size: 18px; }
+    .link-btn { font-size: 12px; color: var(--muted); text-decoration: underline; padding: 6px 2px; }
+    .track {
+      position: relative; height: 48px; margin: 44px 0 24px;
+      background: #fff; border: 1.5px solid #e2e8f0; border-radius: 24px;
+    }
+    .track-road { position: absolute; top: 50%; left: 16px; right: 16px; height: 2px; transform: translateY(-50%);
+      background: repeating-linear-gradient(90deg, #94a3b8 0 8px, transparent 8px 16px); }
+    .track-tick { position: absolute; top: 50%; width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%; background: #cbd5e1; }
+    .track-tick.on { background: var(--eco); }
+    .track-flag { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 20px; z-index: 2; }
+    .track-label { position: absolute; bottom: -20px; font-size: 10.5px; font-weight: 800; color: var(--muted); }
+    .track-label.start { left: 10px; }
+    .track-label.goal { right: 4px; color: #dc2626; }
+    .runner {
+      position: absolute; top: 50%; width: 38px; height: 38px; margin-top: -19px; z-index: 5;
+      left: 4px; transition: left .7s cubic-bezier(.34, 1.56, .64, 1);
+    }
+    .bubble {
+      position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+      background: var(--ink); color: var(--yellow); padding: 4px 9px; border-radius: 12px;
+      font-size: 11px; font-weight: 700; white-space: nowrap; pointer-events: none;
+    }
+    .bubble::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -4px;
+      border: 4px solid transparent; border-top-color: var(--ink); }
+    .bubble.al { left: 0; transform: none; } .bubble.al::after { left: 15px; }
+    .bubble.ar { left: auto; right: 0; transform: none; } .bubble.ar::after { left: auto; right: 11px; }
+
+    .mission-list { display: flex; flex-direction: column; gap: 10px; }
+    .mission {
+      display: flex; align-items: center; gap: 12px; width: 100%; text-align: left;
+      background: #fff; border: 1.5px solid var(--line); border-radius: var(--radius-sm); padding: 11px 13px;
+      transition: border-color .25s, background .25s;
+    }
+    .mission:active { transform: scale(.98); }
+    .mission.done { border-color: var(--eco); background: #f0fdf4; }
+    .m-circle {
+      width: 46px; height: 46px; border-radius: 50%; flex-shrink: 0;
+      border: 2px dashed #94a3b8; background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 900; color: #94a3b8;
+    }
+    .mission.done .m-circle { border: 2.5px solid var(--eco-dark); background: #d1fae5; font-size: 22px; transform: rotate(-10deg); }
+    .mission.just .m-circle { animation: stamp-slam .45s cubic-bezier(.2, 1.4, .4, 1) both; }
+    .m-info { flex: 1; min-width: 0; }
+    .m-name { font-size: 14px; font-weight: 800; color: var(--text); line-height: 1.3; }
+    .m-booth { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+    .m-tag { flex-shrink: 0; font-size: 11px; font-weight: 800; padding: 5px 9px; border-radius: 7px; background: #e2e8f0; color: #475569; }
+    .mission.done .m-tag { background: var(--eco); color: #fff; }
+
+    .goal-box {
+      display: none; text-align: center; color: #fff;
+      background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+      border-radius: var(--radius-md); padding: 18px 16px;
+      box-shadow: 0 10px 25px -5px rgb(245 158 11 / .45);
+      animation: screen-in .5s ease-out;
+    }
+    .goal-box.show { display: block; }
+    .goal-box h4 { font-size: 17px; font-weight: 900; margin-bottom: 6px; }
+    .goal-box p { font-size: 13px; line-height: 1.55; opacity: .96; }
+    .goal-box .claim { margin-top: 12px; background: rgb(255 255 255 / .2); border: 1px dashed rgb(255 255 255 / .7); border-radius: 10px; padding: 10px; font-size: 12.5px; font-weight: 700; }
+    .goal-box.claimed { background: linear-gradient(135deg, #64748b 0%, #334155 100%); box-shadow: none; }
+
+    /* ---------- Scanner ---------- */
+    .screen[data-screen="scan"] { background: var(--ink); min-height: calc(100dvh - 56px); color: #e2e8f0; }
+    .scan-lead { font-size: 13.5px; color: #cbd5e1; text-align: center; margin-bottom: 14px; }
+    .scan-lead b { color: #fff; }
+    .viewfinder {
+      position: relative; width: 100%; aspect-ratio: 1 / 1; border-radius: 22px; overflow: hidden;
+      background: #1e293b;
+    }
+    .viewfinder video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .vf-frame { position: absolute; inset: 15%; pointer-events: none; }
+    .vf-frame i { position: absolute; width: 34px; height: 34px; border: 4px solid var(--yellow); }
+    .vf-frame i:nth-child(1) { top: 0; left: 0; border-right: 0; border-bottom: 0; border-radius: 10px 0 0 0; }
+    .vf-frame i:nth-child(2) { top: 0; right: 0; border-left: 0; border-bottom: 0; border-radius: 0 10px 0 0; }
+    .vf-frame i:nth-child(3) { bottom: 0; left: 0; border-right: 0; border-top: 0; border-radius: 0 0 0 10px; }
+    .vf-frame i:nth-child(4) { bottom: 0; right: 0; border-left: 0; border-top: 0; border-radius: 0 0 10px 0; }
+    .vf-line { position: absolute; left: 4%; right: 4%; height: 2px; background: linear-gradient(90deg, transparent, var(--eco), transparent); box-shadow: 0 0 10px var(--eco); animation: scanline 2.2s ease-in-out infinite alternate; }
+    @keyframes scanline { from { top: 4%; } to { top: 96%; } }
+    .viewfinder:not(.running) .vf-line { display: none; }
+    .vf-msg {
+      position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+      padding: 24px; text-align: center; font-size: 13.5px; color: #cbd5e1; background: #1e293b;
+    }
+    .viewfinder.running .vf-msg { display: none; }
+    .vf-msg .big { font-size: 40px; }
+    .vf-msg .btn { width: auto; padding: 12px 20px; }
+    .scan-status { text-align: center; font-size: 12.5px; color: #94a3b8; margin: 12px 0 16px; min-height: 19px; }
+    .scan-alt { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .scan-alt .btn { background: rgb(255 255 255 / .1); color: #fff; font-size: 13px; padding: 13px 8px; }
+    .pin-box { display: none; margin-top: 12px; background: rgb(255 255 255 / .06); border: 1px solid rgb(255 255 255 / .14); border-radius: 14px; padding: 14px; }
+    .pin-box.open { display: block; }
+    .pin-box label { font-size: 12.5px; color: #cbd5e1; display: block; margin-bottom: 8px; }
+    .pin-row { display: flex; gap: 8px; }
+    .pin-row input {
+      flex: 1; min-width: 0; font: inherit; font-size: 20px; font-weight: 800; letter-spacing: 8px; text-align: center;
+      padding: 10px; border-radius: 10px; border: 1px solid #475569; background: #0f172a; color: #fff;
+    }
+    .pin-row .btn { width: auto; padding: 0 18px; background: var(--eco); }
+    .scan-help { margin-top: 18px; font-size: 12px; color: #94a3b8; line-height: 1.6; }
+    .scan-help b { color: #e2e8f0; }
+
+    /* ---------- Partners ---------- */
+    .org { display: flex; align-items: center; gap: 12px; padding: 12px; background: #fff; border: 1px solid var(--line); border-radius: var(--radius-sm); }
+    .org-logo { width: 46px; height: 46px; border-radius: 12px; background: #f1f5f9; border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; font-size: 21px; flex-shrink: 0; }
+    .org h5 { font-size: 14px; font-weight: 800; color: var(--ink); margin-bottom: 2px; }
+    .org p { font-size: 12px; color: var(--muted); line-height: 1.4; }
+    .org p strong { color: #475569; }
+    .footer { text-align: center; padding: 18px 10px 4px; font-size: 11.5px; color: #94a3b8; line-height: 1.7; }
+    .footer a { color: #64748b; }
+
+    /* ---------- Bottom nav ---------- */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); z-index: 50;
+      width: 100%; max-width: 430px;
+      height: calc(var(--nav-h) + var(--safe-b)); padding-bottom: var(--safe-b);
+      display: grid; grid-template-columns: repeat(5, 1fr); align-items: center;
+      background: rgb(255 255 255 / .97); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid var(--line);
+    }
+    .nav-btn { position: relative; display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 11px; font-weight: 700; color: var(--muted); padding: 6px 0; }
+    .nav-btn svg { width: 23px; height: 23px; fill: currentColor; }
+    .nav-btn.active { color: var(--primary); }
+    .nav-scan { margin-top: -26px; }
+    .nav-scan .fab {
+      width: 58px; height: 58px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(145deg, #0284c7, #10b981); color: #fff;
+      box-shadow: 0 8px 18px -4px rgb(2 132 199 / .55); border: 4px solid #fff;
+    }
+    .nav-scan .fab svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; }
+    .nav-scan.active { color: var(--primary); }
+    .badge {
+      position: absolute; top: 0; left: calc(50% + 6px); min-width: 17px; height: 17px; padding: 0 4px;
+      border-radius: 999px; background: var(--orange); color: #fff; font-size: 10px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 3px rgb(0 0 0 / .2);
+    }
+
+    /* ---------- Toast & confetti ---------- */
+    .toast {
+      position: fixed; left: 50%; bottom: calc(var(--nav-h) + var(--safe-b) + 16px); z-index: 120;
+      transform: translate(-50%, 20px); opacity: 0; pointer-events: none;
+      background: var(--ink); color: #fff; font-size: 13px; font-weight: 700;
+      padding: 11px 16px; border-radius: 12px; max-width: min(92vw, 400px); text-align: center;
+      transition: opacity .2s, transform .2s; box-shadow: var(--shadow-md);
+    }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    #confetti { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 200; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="confetti" aria-hidden="true"></canvas>
+
+  <!-- 공용 SVG 심볼 -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-insta" viewBox="0 0 24 24"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 3.25.15 4.77 1.69 4.92 4.92.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.15 3.23-1.66 4.77-4.92 4.92-1.27.06-1.64.07-4.85.07s-3.58-.01-4.85-.07c-3.26-.15-4.77-1.7-4.92-4.92-.06-1.27-.07-1.64-.07-4.85s.01-3.58.07-4.85C2.38 3.92 3.9 2.38 7.15 2.23 8.42 2.17 8.8 2.16 12 2.16zM12 0C8.74 0 8.33.01 7.05.07 2.7.27.27 2.69.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.2 4.36 2.62 6.78 6.98 6.98 1.28.06 1.69.07 4.95.07s3.67-.01 4.95-.07c4.35-.2 6.78-2.62 6.98-6.98.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95C23.73 2.7 21.31.27 16.95.07 15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.41-11.85a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88z"/></symbol>
+      <symbol id="i-qr" viewBox="0 0 24 24"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M8 9h3v3H8zM13 9h3M13 12h3v3M8 15h3"/></symbol>
+      <symbol id="i-wave" viewBox="0 0 200 200"><path fill="currentColor" d="M47.7-64.5C61.4-57.4 71.8-43.3 77.5-27.6c5.7 15.7 6.6 32.9 1.3 48-5.4 15.1-17 28.1-31 37.3-14 9.2-30.9 14.6-47.9 14.7-17 .2-34.1-5-47.8-14.6C-61.6 48.1-71.9 34-76.3 18.4c-4.5-15.7-3-32.9 4.2-47.8C-64.9-44.3-52-56.9-37.8-63.8-23.6-70.7-8.1-72 4-77.5c12.1-5.5 30 5.9 43.7 13Z" transform="translate(100 100)"/></symbol>
+      <symbol id="i-turtle-top" viewBox="0 0 100 100">
+        <ellipse cx="36" cy="20" rx="7" ry="5" fill="#15803d"/><ellipse cx="64" cy="20" rx="7" ry="5" fill="#15803d"/>
+        <ellipse cx="36" cy="80" rx="7" ry="5" fill="#15803d"/><ellipse cx="64" cy="80" rx="7" ry="5" fill="#15803d"/>
+        <circle cx="50" cy="50" r="38" fill="#15803d" stroke="#166534" stroke-width="2"/>
+        <circle cx="50" cy="50" r="32" fill="#22c55e"/>
+        <path d="M50 28 62 40 58 60H42L38 40Z" fill="#4ade80" stroke="#15803d" stroke-width="2"/>
+        <ellipse cx="82" cy="50" rx="14" ry="10" fill="#4ade80" stroke="#166534" stroke-width="1.5"/>
+        <circle cx="86" cy="47" r="2.5" fill="#0f172a"/>
+        <rect x="75" y="42" width="4" height="16" fill="#ef4444" rx="1.5"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <div class="app" id="app" data-route="home">
+
+    <!-- 상단 바 -->
+    <header class="topbar">
+      <button class="topbar-back" id="backBtn" aria-label="뒤로 가기">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="topbar-logo">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg>
+        <span>부지런 2026</span>
+        <span class="tag">Zero Waste</span>
+      </div>
+      <h1 class="topbar-title" id="topTitle"></h1>
+      <a class="topbar-insta" href="https://www.instagram.com/bujiirun_jeju2026" target="_blank" rel="noopener">
+        <span>인스타</span><svg><use href="#i-insta"/></svg>
+      </a>
+    </header>
+
+    <main>
+      <!-- ============ 홈 ============ -->
+      <section class="screen" data-screen="home" data-title="홈">
+        <div class="stack">
+          <div class="poster">
+            <svg class="poster-wave"><use href="#i-wave"/></svg>
+            <svg class="poster-wave b"><use href="#i-wave"/></svg>
+            <div class="poster-badge">2026 대학생 기후변화 아이디어 공모전 선정</div>
+            <p class="poster-slogan">우리의 바람을 다 모아, 우리가 바라는 세상으로!</p>
+            <h2 class="poster-title">2026 제주 대학생<br>걷기대회 ‘부지런’</h2>
+            <div class="mascot" role="img" aria-label="붉은 머리띠를 두르고 바람개비를 든 거북이 부기">
+              <svg viewBox="0 0 124 120" width="100%" height="100%">
+                <ellipse cx="60" cy="108" rx="42" ry="8" fill="rgba(0,0,0,.2)"/>
+                <ellipse cx="34" cy="94" rx="10" ry="6" fill="#15803d"/><ellipse cx="86" cy="94" rx="10" ry="6" fill="#15803d"/>
+                <ellipse cx="28" cy="74" rx="8" ry="6" fill="#16a34a"/><ellipse cx="92" cy="74" rx="8" ry="6" fill="#16a34a"/>
+                <path d="M26 96h18a4 4 0 0 1 4 4v2H22z" fill="#f8fafc"/><rect x="28" y="100" width="20" height="3" fill="#ef4444" rx="1.5"/>
+                <path d="M78 96h18a4 4 0 0 1 4 4v2H74z" fill="#f8fafc"/><rect x="80" y="100" width="20" height="3" fill="#ef4444" rx="1.5"/>
+                <ellipse cx="60" cy="72" rx="38" ry="32" fill="#15803d"/><ellipse cx="60" cy="71" rx="34" ry="28" fill="#16a34a"/>
+                <path d="M60 48l12 10-4 18H52l-4-18z" fill="#22c55e" stroke="#15803d" stroke-width="2"/>
+                <path d="M60 48l-14-4-14 10 16 4z" fill="#22c55e" stroke="#15803d" stroke-width="1.5"/>
+                <path d="M60 48l14-4 14 10-16 4z" fill="#22c55e" stroke="#15803d" stroke-width="1.5"/>
+                <path d="M52 76 40 88l20 8 8-20z" fill="#22c55e" stroke="#15803d" stroke-width="1.5"/>
+                <circle cx="60" cy="36" r="18" fill="#4ade80" stroke="#16a34a" stroke-width="2"/>
+                <path d="M42 30q18-4 36 0" stroke="#ef4444" stroke-width="6" stroke-linecap="round" fill="none"/>
+                <path d="M78 30q8-2 10 4" stroke="#ef4444" stroke-width="4" stroke-linecap="round" fill="none"/>
+                <circle cx="53" cy="35" r="3.5" fill="#0f172a"/><circle cx="54.5" cy="33.5" r="1.2" fill="#fff"/>
+                <circle cx="67" cy="35" r="3.5" fill="#0f172a"/><circle cx="68.5" cy="33.5" r="1.2" fill="#fff"/>
+                <path d="M56 42q4 5 8 0" stroke="#15803d" stroke-width="2" stroke-linecap="round" fill="none"/>
+                <circle cx="48" cy="40" r="2.5" fill="#f87171" opacity=".6"/><circle cx="72" cy="40" r="2.5" fill="#f87171" opacity=".6"/>
+                <line x1="90" y1="70" x2="108" y2="40" stroke="#b45309" stroke-width="3" stroke-linecap="round"/>
+                <g class="pinwheel">
+                  <path d="M108 40V26l8 8z" fill="#38bdf8"/><path d="M108 40h14l-8 8z" fill="#f43f5e"/>
+                  <path d="M108 40v14l-8-8z" fill="#10b981"/><path d="M108 40H94l8-8z" fill="#f59e0b"/>
+                  <circle cx="108" cy="40" r="3.5" fill="#fbbf24"/>
+                </g>
+              </svg>
+            </div>
+            <div class="poster-meta">
+              <div><span>📅</span><span><strong>일시</strong>10. 3(토) 13:00~20:00</span></div>
+              <div><span>📍</span><span><strong>장소</strong>용담레포츠공원</span></div>
+              <div><span>🚶</span><span><strong>코스</strong>해안도로 ↔ 도두봉 5km</span></div>
+              <div><span>🎟️</span><span><strong>참가비</strong>학생 1.5만 / 일반 2.5만</span></div>
+            </div>
+          </div>
+
+          <button class="now-chip" id="nowChip" hidden data-go="timetable">
+            <span class="live"></span>
+            <span><span class="nc-label">지금 진행 중</span><br><span class="nc-title" id="nowTitle"></span></span>
+          </button>
+
+          <button class="progress-card" data-go="stamp">
+            <div class="pc-text">
+              <div class="pc-title">🐢 거북이 도장판 <b id="homeCount">0</b> / 5</div>
+              <div class="pc-desc" id="homeStampDesc">미션 부스 QR을 스캔해 도장을 모아보세요</div>
+              <div class="pc-dots" id="homeDots"><i></i><i></i><i></i><i></i><i></i></div>
+            </div>
+            <span class="pc-go">이어서 →</span>
+          </button>
+
+          <div class="menu-grid">
+            <button class="menu-tile wide" data-go="scan">
+              <span class="mt-icon"><svg width="24" height="24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><use href="#i-qr"/></svg></span>
+              <span><span class="mt-title">QR 스캔하고 도장 받기</span><br><span class="mt-desc">미션 부스에 붙은 QR을 카메라로 비춰주세요</span></span>
+            </button>
+            <button class="menu-tile" data-go="info">
+              <span class="mt-icon">🌱</span><span class="mt-title">행사·다회용기 안내</span><span class="mt-desc">일정, 취지, 쓰레기 없는 행사 수칙</span>
+            </button>
+            <button class="menu-tile eco" data-go="booths">
+              <span class="mt-icon">🎪</span><span class="mt-title">부스 배치도</span><span class="mt-desc">천막 11동 & 메인 무대</span>
+            </button>
+            <button class="menu-tile" data-go="timetable">
+              <span class="mt-icon">⏱️</span><span class="mt-title">타임테이블</span><span class="mt-desc">13:00 등록부터 20:00 클린업까지</span>
+            </button>
+            <button class="menu-tile eco" data-go="stamp">
+              <span class="mt-badge" id="tileBadge">0/5</span>
+              <span class="mt-icon">🐢</span><span class="mt-title">거북이 도장판</span><span class="mt-desc">5개 모으면 키캡 키링!</span>
+            </button>
+            <button class="menu-tile org" data-go="partners" style="grid-column:1/-1; min-height:0; flex-direction:row; align-items:center; gap:12px;">
+              <span class="mt-icon">🤝</span>
+              <span><span class="mt-title">함께하는 단체·후원 가게</span><br><span class="mt-desc">주최·주관·지원 기관과 친환경 파트너</span></span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 행사 안내 ============ -->
+      <section class="screen" data-screen="info" data-title="행사·다회용기 안내">
+        <div class="stack">
+          <div class="card">
+            <dl class="fact-list">
+              <div class="fact"><dt>일시</dt><dd>2026년 10월 3일(토) 13:00 ~ 20:00</dd></div>
+              <div class="fact"><dt>장소</dt><dd>제주시 용담레포츠공원 (휴식공간 · 잔디운동장)</dd></div>
+              <div class="fact"><dt>코스</dt><dd>해안도로 도두봉 반환, 왕복 5km<br><span style="color:var(--muted);font-size:12.5px">16:50 A그룹(빠른 걸음) · 17:00 B그룹(여유 걸음) 출발</span></dd></div>
+              <div class="fact"><dt>참가비</dt><dd>대학생 15,000원 / 일반 25,000원</dd></div>
+            </dl>
+          </div>
+
+          <div class="card info-box">
+            <h3 class="info-title">행사 취지: 우리가 만드는 변화 ‘부지런’</h3>
+            <p class="info-desc">
+              고물가 시대 대학생들의 식비와 생활비 부담을 덜기 위해 시작된 <strong>‘천원의 학식(천원의 행복)’ 프로젝트</strong>에 약 1,900명의 대학생이 서명으로 연대했습니다.
+              ‘부지런’은 그 청년 자치의 힘을 이어, <strong>2040 플라스틱 프리 제주</strong>를 위해 일회용품 없는 축제를 직접 실천하는 걷기대회입니다.
+            </p>
+          </div>
+
+          <div class="card info-box eco">
+            <h3 class="info-title">🌱 다회용기 안내 (쓰레기 없는 행사)</h3>
+            <p class="info-desc">행사장에는 쓰레기통이 없습니다. 내가 가져온 쓰레기는 내가 되가져가는 <strong>LNT 원칙</strong>으로 쓰레기 0에 함께해주세요.</p>
+            <div class="eco-list">
+              <div class="eco-item"><span class="ei">🥤</span><div><h4>개인 텀블러 필수 지참</h4><p>종이컵·페트병을 두지 않습니다. 대용량 급수대에서 텀블러에 물을 채워주세요.</p></div></div>
+              <div class="eco-item"><span class="ei">🍽️</span><div><h4>리턴잇 다회용기 & 반납존</h4><p>완주 비빔밥은 세척·재사용 다회용기에 담겨 나갑니다. 식사 후 <strong>6번 부스 반납존</strong>에 돌려주세요.</p></div></div>
+              <div class="eco-item"><span class="ei">🏅</span><div><h4>배번표로 만드는 종이 메달</h4><p>금속 메달 대신, 달고 걸은 배번표를 접어 나만의 업사이클링 메달을 만듭니다. (5번 부스)</p></div></div>
+              <div class="eco-item"><span class="ei">🛍️</span><div><h4>비닐 없는 짐보관</h4><p>비닐봉투를 드리지 않아요. 에코백·배낭을 챙기거나 기부받은 종이 쇼핑백을 이용해주세요.</p></div></div>
+            </div>
+          </div>
+
+          <div class="card info-box">
+            <h3 class="info-title">🚶 함께 걷는 약속</h3>
+            <ul class="rule-list">
+              <li>기본은 우측통행, 추월은 왼쪽으로 한 뒤 다시 오른쪽으로</li>
+              <li>일행과 나란히 길을 가로막지 않기</li>
+              <li>횡단보도·삼거리에서는 안전요원 안내 따르기</li>
+              <li>몸이 불편하면 가까운 스태프나 2번 부스(본부·의료)로</li>
+            </ul>
+          </div>
+
+          <a class="insta-btn" href="https://www.instagram.com/bujiirun_jeju2026" target="_blank" rel="noopener">
+            <svg><use href="#i-insta"/></svg><span>공식 인스타그램 @bujiirun_jeju2026</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- ============ 부스 배치도 ============ -->
+      <section class="screen" data-screen="booths" data-title="부스 배치도">
+        <div class="stack">
+          <p class="screen-lead">용담레포츠공원 A구역 천막과 잔디운동장 메인 무대입니다. 부스를 누르면 자세한 안내가 열려요.</p>
+          <div class="chip-row" id="boothFilter" role="tablist">
+            <button class="chip active" data-cat="all">전체 부스 (12)</button>
+            <button class="chip" data-cat="operation">운영·안내</button>
+            <button class="chip" data-cat="eco">친환경·체험</button>
+            <button class="chip" data-cat="student">대학생·동아리</button>
+            <button class="chip" data-cat="food">음식·반납</button>
+          </div>
+          <div class="ground">
+            <div class="zone-label">🚩 휴식 공간 천막 존 (A구역)</div>
+            <div class="booth-grid" id="boothGrid"></div>
+          </div>
+          <div class="legend">
+            <span><i></i>운영</span><span><i class="eco"></i>친환경</span><span><i class="org"></i>대학생·자치</span><span>🐢 도장 미션 부스</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 타임테이블 ============ -->
+      <section class="screen" data-screen="timetable" data-title="타임테이블 · 10월 3일">
+        <div class="stack">
+          <div class="seg" id="tlFilter">
+            <button class="active" data-role="all">전체 일정</button>
+            <button data-role="participant">참가자 기준</button>
+            <button data-role="booth">부스·공연진</button>
+          </div>
+          <div class="timeline" id="timeline"></div>
+        </div>
+      </section>
+
+      <!-- ============ 도장판 ============ -->
+      <section class="screen" data-screen="stamp" data-title="거북이 도장판">
+        <div class="stack">
+          <div class="card race">
+            <div class="race-head">
+              <div class="race-count">도장 <b id="stampCount">0</b> / 5개</div>
+              <button class="link-btn" id="resetBtn">초기화</button>
+            </div>
+            <div class="track" id="track">
+              <div class="track-road"></div>
+              <div class="runner" id="runner">
+                <div class="bubble al" id="bubble">도장을 모아 결승선으로! 🐢</div>
+                <svg width="100%" height="100%"><use href="#i-turtle-top"/></svg>
+              </div>
+              <span class="track-flag">🏁</span>
+              <span class="track-label start">출발</span>
+              <span class="track-label goal">결승선(GOAL)</span>
+            </div>
+            <button class="btn eco" data-go="scan"><svg fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><use href="#i-qr"/></svg>QR 스캔하고 도장 받기</button>
+          </div>
+
+          <div class="goal-box" id="goalBox">
+            <h4 id="goalTitle">🎉 거북이가 결승선에 도착했어요!</h4>
+            <p id="goalDesc">5개 미션을 모두 완료했습니다.<br><strong>본부(2번 부스)</strong>에 이 화면을 보여주면<br><strong>‘1구 키캡 키링 & 럭키드로우 응모권’</strong>을 드려요.</p>
+            <div class="claim" id="claimNote">본부 스태프가 교환 QR을 스캔하게 해주세요</div>
+          </div>
+
+          <div class="h-sub">미션 부스 5곳</div>
+          <div class="mission-list" id="missionList"></div>
+        </div>
+      </section>
+
+      <!-- ============ QR 스캔 ============ -->
+      <section class="screen" data-screen="scan" data-title="QR 스캔">
+        <p class="scan-lead">미션 부스에 붙은 <b>부지런 QR</b>을 네모 칸 안에 맞춰주세요</p>
+        <div class="viewfinder" id="viewfinder">
+          <video id="video" playsinline muted autoplay></video>
+          <div class="vf-frame"><i></i><i></i><i></i><i></i></div>
+          <div class="vf-line"></div>
+          <div class="vf-msg" id="vfMsg">
+            <div class="big">📷</div>
+            <div id="vfText">카메라를 켜는 중…</div>
+            <button class="btn eco" id="camRetry" hidden>카메라 켜기</button>
+          </div>
+        </div>
+        <p class="scan-status" id="scanStatus" aria-live="polite"></p>
+        <div class="scan-alt">
+          <button class="btn" id="photoBtn">🖼️ 사진으로 스캔</button>
+          <button class="btn" id="pinToggle">🔢 부스 코드 입력</button>
+        </div>
+        <input type="file" id="photoInput" accept="image/*" hidden>
+        <div class="pin-box" id="pinBox">
+          <label for="pinInput">부스 스태프에게 받은 4자리 코드를 입력하세요</label>
+          <div class="pin-row">
+            <input id="pinInput" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" placeholder="0000">
+            <button class="btn" id="pinSubmit">확인</button>
+          </div>
+        </div>
+        <p class="scan-help">
+          <b>카메라가 안 켜지나요?</b><br>
+          · 카카오톡·인스타 앱 안에서 열었다면 오른쪽 위 메뉴에서 <b>다른 브라우저로 열기</b>를 눌러주세요.<br>
+          · 카메라 권한을 거절했다면 브라우저 주소창의 설정에서 카메라를 허용해주세요.<br>
+          · 휴대폰 기본 카메라로 QR을 찍어도 도장이 찍혀요.
+        </p>
+      </section>
+
+      <!-- ============ 단체·후원 ============ -->
+      <section class="screen" data-screen="partners" data-title="단체·후원 가게">
+        <div class="stack">
+          <div class="h-sub">🏛️ 주최 · 주관 · 지원</div>
+          <div class="org"><div class="org-logo">🌿</div><div><h5>제주 대학생 실천 공동체 ‘곶’</h5><p><strong>주최</strong> · 제주 청년·대학생의 실천으로 사회 변화를 만드는 공동체</p></div></div>
+          <div class="org"><div class="org-logo">🏃</div><div><h5>2026 부지런 서포터즈</h5><p><strong>주관</strong> · 기획팀, 총무팀, 홍보팀, 쓰없팀(쓰레기없는행사팀), 참조팀</p></div></div>
+          <div class="org"><div class="org-logo">💚</div><div><h5>사단법인 아미유 (사랑의 열매)</h5><p><strong>공모 지원</strong> · 2026 대학생 기후변화 아이디어 공모전 지원사업</p></div></div>
+
+          <div class="h-sub" style="margin-top:10px">🌱 친환경 파트너 & 후원 가게</div>
+          <div class="org"><div class="org-logo">🌸</div><div><h5>꽃마리 협동조합</h5><p><strong>리필 스테이션</strong> · 텀블러 지원사업, 친환경 세제·비누 리필</p></div></div>
+          <div class="org"><div class="org-logo">☕</div><div><h5>비굳커피</h5><p><strong>텀블러 동참 카페</strong> · 텀블러 할인 캠페인</p></div></div>
+          <div class="org"><div class="org-logo">🌏</div><div><h5>지구별가게</h5><p><strong>제로웨이스트 샵</strong> · 라이프스타일 굿즈, 참가자 손수건 협찬</p></div></div>
+          <div class="org"><div class="org-logo">🎁</div><div><h5>아름다운가게 제주 (동문점 / 노형점)</h5><p><strong>자원순환 나눔</strong> · 나눔 부스 운영 및 기부 연계</p></div></div>
+          <div class="org"><div class="org-logo">♻️</div><div><h5>리턴잇 & 노플라스틱선데이</h5><p><strong>다회용기 & 업사이클링</strong> · 다회용기 대여·세척 공급, 업사이클링 키캡 키링</p></div></div>
+          <div class="org"><div class="org-logo">👟</div><div><h5>무해런</h5><p><strong>멘토링</strong> · 쓰레기 없는 마라톤 기획·운영 노하우</p></div></div>
+          <div class="org"><div class="org-logo">🎓</div><div><h5>제주대학교 동아리연합회 & 제주한라대학교 총학생회</h5><p><strong>학생 자치 연대</strong> · 도내 대학 자치 협력</p></div></div>
+
+          <footer class="footer">
+            <p><strong>2026 제주 대학생 걷기대회 ‘부지런’ 기획단</strong></p>
+            <p>문의 <a href="mailto:bujiirunjeju@gmail.com">bujiirunjeju@gmail.com</a> · <a href="tel:01073874669">010-7387-4669</a></p>
+            <p>Instagram @bujiirun_jeju2026</p>
+            <p style="margin-top:4px">© 2026 부지런(곶). Zero-Waste Jeju.</p>
+          </footer>
+        </div>
+      </section>
+    </main>
+
+    <!-- 하단 내비게이션 -->
+    <nav class="bottom-nav" aria-label="주요 화면">
+      <button class="nav-btn" data-go="home" data-nav="home">
+        <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>홈</span>
+      </button>
+      <button class="nav-btn" data-go="booths" data-nav="booths">
+        <svg viewBox="0 0 24 24"><path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm-7 3a3.5 3.5 0 0 1 3.5 3.5C15.5 12.1 12 16 12 16s-3.5-3.9-3.5-6.5A3.5 3.5 0 0 1 12 6z"/></svg><span>부스맵</span>
+      </button>
+      <button class="nav-btn nav-scan" data-go="scan" data-nav="scan" aria-label="QR 스캔">
+        <span class="fab"><svg viewBox="0 0 24 24"><use href="#i-qr"/></svg></span><span>QR 스캔</span>
+      </button>
+      <button class="nav-btn" data-go="timetable" data-nav="timetable">
+        <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg><span>일정</span>
+      </button>
+      <button class="nav-btn" data-go="stamp" data-nav="stamp">
+        <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-2 15-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8z"/></svg><span>도장판</span>
+        <span class="badge" id="navBadge">0</span>
+      </button>
+    </nav>
+
+    <!-- 부스 상세 바텀시트 -->
+    <div class="scrim" id="boothSheet" aria-hidden="true">
+      <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+        <div class="sheet-grip"></div>
+        <div class="sheet-head"><span class="num" id="sheetNum">1</span><h3 class="sheet-title" id="sheetTitle"></h3></div>
+        <span class="sheet-cat" id="sheetCat"></span>
+        <p class="sheet-desc" id="sheetDesc"></p>
+        <div class="sheet-mission" id="sheetMission" hidden>
+          <h5 id="sheetMissionTitle"></h5>
+          <p id="sheetMissionDesc"></p>
+        </div>
+        <div class="btn-row">
+          <button class="btn ghost" data-close>닫기</button>
+          <button class="btn eco" id="sheetScan" hidden>QR 스캔하러 가기</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 스캔 결과 모달 -->
+    <div class="scrim center" id="resultModal" aria-hidden="true">
+      <div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="resultTitle">
+        <div class="stamp-mark" id="resultMark"><span class="sm-emoji" id="resultEmoji">🐢</span><span class="sm-text" id="resultStampText">부지런</span></div>
+        <h3 class="modal-title" id="resultTitle"></h3>
+        <p class="modal-desc" id="resultDesc"></p>
+        <div class="btn-row">
+          <button class="btn ghost" id="resultAgain">계속 스캔</button>
+          <button class="btn eco" id="resultGo">도장판 보기</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="status"></div>
+  </div>
+
+  <script>
+  (() => {
+    'use strict';
+
+    /* ================== 데이터 ================== */
+    const BOOTHS = [
+      { n: 1, name: '참가자 등록 부스', short: '티셔츠·배번표 수령', cat: 'operation', tone: '', label: '운영·안내', desc: '참가자 본인 확인 후 티셔츠·배번표·스트링백을 나눠드립니다. 현장 접수도 이곳에서 해요.' },
+      { n: 2, name: '부지런 본부·의료', short: '상황실 & 안전 지원', cat: 'operation', tone: '', label: '운영·안내', desc: '행사 총괄 본부입니다. 구급상자, 미아보호, 긴급상황 지원을 맡고 있어요. 도장 5개 완주 리워드도 여기서 교환합니다.' },
+      { n: 3, name: '물품보관소', short: '비닐 없는 짐보관', cat: 'operation', tone: '', label: '운영·안내', desc: '비닐봉투 대신 개인 가방이나 기부받은 종이 쇼핑백에 짐을 보관합니다.' },
+      { n: 4, name: '천원의 행복 홍보관', short: '학식 서명 & 소원 트리', cat: 'student', tone: 'org', label: '대학생·자치', desc: '부지런 자체 홍보부스입니다. ‘천원의 행복’ 서명 운동, 소원 트리 쓰기, 대학생 자치 의제를 나눠요.', mission: 1 },
+      { n: 5, name: '배번표 메달접기', short: '업사이클링 종이 메달', cat: 'eco', tone: 'eco', label: '친환경·체험', desc: '완주 후 배번표를 접어 나만의 업사이클링 종이 메달을 만듭니다. 17:30부터 열려요.', mission: 5 },
+      { n: 6, name: '음식나눔 & 다회용기 반납존', short: '완주 비빔밥 & 용기 반납', cat: 'food', tone: 'eco', label: '음식·반납', desc: '리턴잇 다회용기에 담긴 완주 기념 비빔밥을 받고, 다 먹은 용기를 반납하는 곳입니다. 17:50부터 열려요.', mission: 5 },
+      { n: 7, name: '꽃마리 & 비굳커피', short: '리필 스테이션 & 텀블러', cat: 'eco', tone: 'eco', label: '친환경·체험', desc: '친환경 세제 리필 스테이션과 텀블러 할인 매장 지원사업을 소개합니다.', mission: 2 },
+      { n: 8, name: '아름다운가게 제주', short: '자원순환 나눔', cat: 'eco', tone: 'eco', label: '친환경·체험', desc: '자원순환 나눔 부스입니다. 기부 물품 전시와 제로웨이스트 실천을 함께해요.', mission: 3 },
+      { n: 9, name: '바이탈 (VITAL)', short: '혈압 체크 & 스트레칭', cat: 'student', tone: 'org', label: '대학생·동아리', desc: '제주대 간호·보건 봉사동아리가 혈압 체크와 걷기 전 스트레칭을 안내합니다.', mission: 4 },
+      { n: 10, name: '바람 & JPC 포토존', short: '기후 퀴즈 & 완주 인생샷', cat: 'student', tone: 'org', label: '대학생·동아리', desc: '환경동아리 바람의 기후행동 퀴즈와 사진동아리 JPC의 완주 인생샷 포토존입니다.', mission: 4 },
+      { n: 11, name: '한라대 총학 & 글로컬', short: '대학 자치 연대', cat: 'student', tone: 'org', label: '대학생·자치', desc: '도내 대학 자치 연대와 외국인 유학생 문화 교류 부스입니다.' },
+      { n: 12, name: '메인 무대 (잔디운동장)', short: '개·폐회식, 공연, 준비운동', cat: 'operation', tone: '', label: '다목적 잔디운동장', desc: '개·폐회식, 동아리 공연, 다함께 준비운동 체조가 열리는 메인 무대입니다.', stage: true }
+    ];
+
+    // QR 코드 값: <앱 주소>#/q/<code>. 휴대폰 기본 카메라로 찍어도 앱이 열리며 도장이 찍힌다.
+    const MISSIONS = [
+      { id: 1, title: '천원의 학식 서명 동참', where: '4번 부스 · 천원의 행복 홍보관', booths: [4], how: '서명 운동에 참여한 뒤 부스의 QR을 스캔하세요.', code: 'BJR-M1-K4H7', pin: '4127' },
+      { id: 2, title: '텀블러 지참 & 친환경 퀴즈', where: '7번 부스 · 꽃마리 & 비굳커피', booths: [7], how: '텀블러를 보여주거나 친환경 퀴즈를 풀고 QR을 스캔하세요.', code: 'BJR-M2-T7Q2', pin: '7358' },
+      { id: 3, title: '자원순환 나눔 체험', where: '8번 부스 · 아름다운가게 제주', booths: [8], how: '나눔 체험을 마치고 부스의 QR을 스캔하세요.', code: 'BJR-M3-R8N5', pin: '8264' },
+      { id: 4, title: '청년 건강 & 기후행동', where: '9·10번 부스 · 바이탈 또는 바람', booths: [9, 10], how: '건강 체크나 기후 퀴즈 중 하나에 참여하고 QR을 스캔하세요.', code: 'BJR-M4-V9C3', pin: '9105' },
+      { id: 5, title: '메달접기 또는 다회용기 반납', where: '5·6번 부스 · 메달접기 & 반납존', booths: [5, 6], how: '배번표 메달을 접거나 다회용기를 반납하고 QR을 스캔하세요.', code: 'BJR-M5-G5W8', pin: '5693' }
+    ];
+    const CLAIM = { code: 'BJR-CLAIM-X2P9', pin: '0203' }; // 본부(2번 부스) 리워드 교환용
+
+    const QUOTES = [
+      '도장을 모아 결승선으로! 🐢',
+      '첫 발걸음! 부지런히 가자! 💨',
+      '절반을 향해 뚜벅뚜벅! 🌊',
+      '벌써 3개 완료! 조금만 더! 🌟',
+      '결승선이 코앞이야! 1개 남음! 🔥',
+      '만세! 결승선 도착! 완주 성공! 🎉'
+    ];
+
+    const TIMELINE = [
+      { s: '12:30', e: '13:00', type: 'booth', title: '부스 운영진 · 서포터즈 집결', desc: '천막 세팅, 키트 배치, 다회용기 검수' },
+      { s: '13:00', e: '16:30', type: 'participant booth', hl: 1, title: '🎪 참가자 등록 & 부스 오픈', desc: '티셔츠·배번표 수령, 부스 체험과 거북이 도장판 스탬프 투어 시작' },
+      { s: '14:00', e: '16:00', type: 'participant booth', title: '🎸 사전 무대 공연 & 부스 인터뷰', desc: '동아리 밴드·댄스·수어 공연, 부스 릴레이 인터뷰' },
+      { s: '16:00', e: '16:30', type: 'participant booth', hl: 1, title: '📢 개회식 & 청년 기후 선언문 낭독', desc: '천원의 행복 보고, 제주 대학생 공동 선언' },
+      { s: '16:30', e: '16:50', type: 'participant', title: '🙆 다함께 준비운동', desc: '부상 방지를 위한 전신 스트레칭 체조' },
+      { s: '16:50', e: '17:00', type: 'participant', hl: 1, title: '🚶 그룹별 순차 출발', desc: '16:50 A그룹(빠른 걸음) → 17:00 B그룹(여유 걸음) · 도두봉 반환 왕복 5km' },
+      { s: '17:30', e: '19:20', type: 'participant booth', title: '🏅 배번표 메달접기 부스 오픈', desc: '먼저 도착한 참가자부터 배번표를 종이 메달로 업사이클링', open: 1 },
+      { s: '17:50', e: '19:20', type: 'participant', hl: 1, title: '🥣 완주 기념 음식 나눔', desc: '리턴잇 다회용기 비빔밥 배부 & 반납존 운영', open: 1 },
+      { s: '18:30', e: '19:20', type: 'participant booth', hl: 1, title: '🎉 폐회식 & 피날레 공연', desc: '서포터즈 축하 무대, 19:20 느린 걸음 참가자 최종 완주 케어' },
+      { s: '19:30', e: '20:00', type: 'booth', title: '🧹 클린업 & 쓰레기 0 점검', desc: '다회용기 최종 회수, 분리배출, 공원 원상복구' }
+    ];
+    const EVENT_DATE = '2026-10-03';
+
+    const TITLES = { home: '홈', info: '행사·다회용기 안내', booths: '부스 배치도', timetable: '타임테이블 · 10월 3일', stamp: '거북이 도장판', scan: 'QR 스캔', partners: '단체·후원 가게' };
+
+    /* ================== 유틸 ================== */
+    const $ = (s, el = document) => el.querySelector(s);
+    const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+    const app = $('#app');
+    let toastTimer;
+    function toast(msg) {
+      const t = $('#toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
+    }
+    function vibrate(p) { try { navigator.vibrate && navigator.vibrate(p); } catch (e) {} }
+    const hhmm = ts => { const d = new Date(ts); return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); };
+
+    /* ================== 상태 저장 ================== */
+    const KEY = 'bujiirun2026.state.v1';
+    let state = { stamps: {}, claimedAt: null };
+    try { const raw = localStorage.getItem(KEY); if (raw) state = Object.assign(state, JSON.parse(raw)); } catch (e) {}
+    function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+    const count = () => MISSIONS.filter(m => state.stamps[m.id]).length;
+
+    /* ================== 라우터 ================== */
+    let current = null;
+    let navDepth = 0; // 앱 안에서 이동한 횟수 (뒤로가기 판단용)
+
+    function go(route) {
+      if (('#/' + route) === location.hash) { render(); return; }
+      navDepth++;
+      location.hash = '#/' + route;
+    }
+
+    function parseHash() {
+      const h = location.hash.replace(/^#\/?/, '');
+      if (h.startsWith('q/')) return { route: 'q', arg: decodeURIComponent(h.slice(2)) };
+      return { route: TITLES[h] ? h : 'home' };
+    }
+
+    function render() {
+      const { route, arg } = parseHash();
+      if (route === 'q') {
+        // 기본 카메라로 QR을 찍고 들어온 경우
+        history.replaceState(null, '', '#/stamp');
+        render();
+        setTimeout(() => handleCode(arg), 150);
+        return;
+      }
+      if (current === 'scan' && route !== 'scan') Scanner.stop();
+      current = route;
+      app.dataset.route = route;
+      $$('.screen').forEach(s => s.classList.toggle('active', s.dataset.screen === route));
+      $$('[data-nav]').forEach(b => b.classList.toggle('active', b.dataset.nav === route));
+      $('#topTitle').textContent = TITLES[route];
+      document.title = route === 'home' ? '부지런 2026' : TITLES[route] + ' · 부지런 2026';
+      closeSheet(); closeModal();
+      window.scrollTo(0, 0);
+      if (route === 'scan') Scanner.start();
+      if (route === 'timetable' || route === 'home') updateNow();
+    }
+
+    window.addEventListener('hashchange', render);
+    document.addEventListener('click', e => {
+      const b = e.target.closest('[data-go]');
+      if (b) { e.preventDefault(); go(b.dataset.go); }
+    });
+    $('#backBtn').addEventListener('click', () => {
+      if (navDepth > 0) { navDepth--; history.back(); } else { history.replaceState(null, '', '#/home'); render(); }
+    });
+
+    /* ================== 부스 배치도 ================== */
+    const grid = $('#boothGrid');
+    grid.innerHTML = BOOTHS.map(b => `
+      <button class="booth${b.stage ? ' stage' : ''}" data-cat="${b.cat}" data-booth="${b.n}">
+        <span class="num ${b.tone}">${b.n}</span>
+        ${b.mission ? `<span class="booth-stamp" data-mission-tag="${b.mission}">🐢 도장</span>` : ''}
+        <span class="booth-name">${b.name}</span>
+        <span class="booth-desc">${b.short}</span>
+      </button>`).join('');
+
+    $('#boothFilter').addEventListener('click', e => {
+      const chip = e.target.closest('.chip');
+      if (!chip) return;
+      $$('#boothFilter .chip').forEach(c => c.classList.toggle('active', c === chip));
+      const cat = chip.dataset.cat;
+      $$('.booth', grid).forEach(el => el.classList.toggle('hidden', cat !== 'all' && el.dataset.cat !== cat));
+    });
+    grid.addEventListener('click', e => {
+      const el = e.target.closest('.booth');
+      if (el) openBooth(+el.dataset.booth);
+    });
+
+    function openBooth(n) {
+      const b = BOOTHS.find(x => x.n === n);
+      if (!b) return;
+      $$('.booth', grid).forEach(el => el.classList.toggle('selected', +el.dataset.booth === n));
+      $('#sheetNum').textContent = b.n;
+      $('#sheetNum').className = 'num ' + b.tone;
+      $('#sheetTitle').textContent = `${b.n}번 부스 · ${b.name}`;
+      if (b.stage) $('#sheetTitle').textContent = b.name;
+      $('#sheetCat').textContent = b.label;
+      $('#sheetDesc').textContent = b.desc;
+      const m = b.mission && MISSIONS.find(x => x.id === b.mission);
+      $('#sheetMission').hidden = !m;
+      $('#sheetScan').hidden = !m || !!state.stamps[m.id];
+      if (m) {
+        const done = state.stamps[m.id];
+        $('#sheetMissionTitle').textContent = `🐢 도장 미션 ${m.id} · ${m.title}` + (done ? ' (완료)' : '');
+        $('#sheetMissionDesc').textContent = done ? `${hhmm(done)}에 도장을 받았어요.` : m.how;
+      }
+      openScrim($('#boothSheet'));
+    }
+    $('#sheetScan').addEventListener('click', () => go('scan'));
+
+    function openScrim(el) { el.classList.add('open'); el.setAttribute('aria-hidden', 'false'); }
+    function closeScrim(el) { el.classList.remove('open'); el.setAttribute('aria-hidden', 'true'); }
+    function closeSheet() { closeScrim($('#boothSheet')); $$('.booth', grid).forEach(el => el.classList.remove('selected')); }
+    $('#boothSheet').addEventListener('click', e => { if (e.target.id === 'boothSheet' || e.target.closest('[data-close]')) closeSheet(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeSheet(); closeModal(); } });
+
+    /* ================== 타임테이블 ================== */
+    const tl = $('#timeline');
+    tl.innerHTML = TIMELINE.map((t, i) => `
+      <div class="tl-item${t.hl ? ' highlight' : ''}" data-type="${t.type}" data-i="${i}">
+        <span class="tl-time">${t.s} ~ ${t.open ? '' : t.e}</span><span class="tl-now">진행 중</span>
+        <h4 class="tl-title">${t.title}</h4>
+        <p class="tl-desc">${t.desc}</p>
+      </div>`).join('');
+
+    $('#tlFilter').addEventListener('click', e => {
+      const b = e.target.closest('button');
+      if (!b) return;
+      $$('#tlFilter button').forEach(x => x.classList.toggle('active', x === b));
+      const role = b.dataset.role;
+      $$('.tl-item', tl).forEach(el => el.classList.toggle('hidden', role !== 'all' && !el.dataset.type.split(' ').includes(role)));
+    });
+
+    const toMin = s => { const [h, m] = s.split(':').map(Number); return h * 60 + m; };
+    function updateNow() {
+      const d = new Date();
+      const today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      const isDay = today === EVENT_DATE;
+      const now = d.getHours() * 60 + d.getMinutes();
+      let live = [];
+      $$('.tl-item', tl).forEach(el => {
+        const t = TIMELINE[+el.dataset.i];
+        const on = isDay && now >= toMin(t.s) && now < toMin(t.e);
+        el.classList.toggle('now', on);
+        el.classList.toggle('past', isDay && now >= toMin(t.e));
+        if (on) live.push(t);
+      });
+      const chip = $('#nowChip');
+      chip.hidden = !live.length;
+      if (live.length) $('#nowTitle').textContent = live[live.length - 1].title.replace(/^\S+\s/, '') + ` (${live[live.length - 1].s}~)`;
+    }
+    setInterval(updateNow, 60000);
+
+    /* ================== 도장판 ================== */
+    const list = $('#missionList');
+    list.innerHTML = MISSIONS.map(m => `
+      <button class="mission" data-mission="${m.id}">
+        <span class="m-circle">${m.id}</span>
+        <span class="m-info"><span class="m-name">${m.title}</span><br><span class="m-booth">${m.where}</span></span>
+        <span class="m-tag">QR 스캔</span>
+      </button>`).join('');
+    list.addEventListener('click', e => {
+      const el = e.target.closest('.mission');
+      if (!el) return;
+      const m = MISSIONS.find(x => x.id === +el.dataset.mission);
+      openBooth(m.booths[0]);
+    });
+
+    function renderStamps(justId) {
+      const c = count();
+      MISSIONS.forEach(m => {
+        const el = $(`.mission[data-mission="${m.id}"]`);
+        const done = state.stamps[m.id];
+        el.classList.toggle('done', !!done);
+        el.classList.toggle('just', justId === m.id);
+        $('.m-circle', el).textContent = done ? '🐢' : m.id;
+        $('.m-tag', el).textContent = done ? `${hhmm(done)} 완료` : 'QR 스캔';
+        $$(`[data-mission-tag="${m.id}"]`).forEach(t => { t.classList.toggle('done', !!done); t.textContent = done ? '🐢 완료' : '🐢 도장'; });
+      });
+      $('#stampCount').textContent = c;
+      $('#navBadge').textContent = c;
+      $('#homeCount').textContent = c;
+      $('#tileBadge').textContent = `${c}/5`;
+      $$('#homeDots i').forEach((d, i) => d.classList.toggle('on', i < c));
+      $('#homeStampDesc').textContent = c === 5 ? (state.claimedAt ? '완주 리워드 교환 완료!' : '완주! 본부(2번 부스)에서 리워드를 받으세요') : c === 0 ? '미션 부스 QR을 스캔해 도장을 모아보세요' : `${5 - c}개만 더 모으면 완주!`;
+
+      // 거북이 위치: 출발(4px) ~ 깃발 앞(100% - 72px)
+      const runner = $('#runner'), bubble = $('#bubble');
+      runner.style.left = `calc((100% - 76px) * ${c / 5} + 4px)`;
+      bubble.textContent = QUOTES[c];
+      bubble.className = 'bubble' + (c <= 1 ? ' al' : c >= 4 ? ' ar' : '');
+
+      const box = $('#goalBox');
+      box.classList.toggle('show', c === 5);
+      box.classList.toggle('claimed', !!state.claimedAt);
+      $('#goalTitle').textContent = state.claimedAt ? '✅ 완주 리워드 교환 완료' : '🎉 거북이가 결승선에 도착했어요!';
+      $('#goalDesc').innerHTML = state.claimedAt
+        ? '5개 미션을 모두 완료하고 리워드를 받았어요.<br>함께 걸어줘서 고마워요!'
+        : '5개 미션을 모두 완료했습니다.<br><strong>본부(2번 부스)</strong>에 이 화면을 보여주면<br><strong>‘1구 키캡 키링 & 럭키드로우 응모권’</strong>을 드려요.';
+      $('#claimNote').textContent = state.claimedAt ? `${hhmm(state.claimedAt)}에 교환했어요. 폐회식 럭키드로우를 기대해주세요!` : '본부 스태프에게 교환 QR 스캔을 요청하세요';
+    }
+
+    $('#resetBtn').addEventListener('click', () => {
+      if (!count() && !state.claimedAt) { toast('아직 받은 도장이 없어요'); return; }
+      if (!confirm('모은 도장을 모두 지울까요? 되돌릴 수 없어요.')) return;
+      state = { stamps: {}, claimedAt: null };
+      save(); renderStamps(); toast('도장판을 초기화했어요');
+    });
+
+    /* ================== 코드 처리 ================== */
+    function extractCode(text) {
+      const m = String(text || '').toUpperCase().match(/BJR-[A-Z0-9]+(?:-[A-Z0-9]+)?/);
+      return m ? m[0] : null;
+    }
+
+    function handleCode(raw) {
+      const code = extractCode(raw) || String(raw || '').toUpperCase();
+      const mission = MISSIONS.find(m => m.code === code);
+      if (mission) return grantStamp(mission);
+      if (code === CLAIM.code) return claimReward();
+      const bm = code.match(/^BJR-B(\d{1,2})$/);
+      if (bm && BOOTHS.some(b => b.n === +bm[1])) {
+        go('booths');
+        setTimeout(() => openBooth(+bm[1]), 250);
+        return;
+      }
+      showResult({ kind: 'err', emoji: '❓', stampText: 'NO', title: '부지런 QR이 아니에요', desc: '미션 부스에 붙은 부지런 QR을 스캔해주세요.', again: true, goLabel: '도장판 보기' });
+    }
+
+    function grantStamp(m) {
+      if (state.stamps[m.id]) {
+        showResult({ kind: 'warn', emoji: '🐢', stampText: '완료', title: '이미 받은 도장이에요', desc: `미션 ${m.id} · ${m.title}\n${hhmm(state.stamps[m.id])}에 받았어요. 다른 미션 부스를 찾아가보세요!`, again: true });
+        return;
+      }
+      state.stamps[m.id] = Date.now();
+      save();
+      const c = count();
+      renderStamps(m.id);
+      vibrate([30, 40, 60]);
+      if (c === 5) {
+        showResult({ kind: 'ok', emoji: '🏁', stampText: '완주', title: '5개 모두 완료! 결승선 도착!', desc: '본부(2번 부스)에 도장판 화면을 보여주고\n1구 키캡 키링 & 럭키드로우 응모권을 받으세요.', again: false });
+        confetti();
+      } else {
+        showResult({ kind: 'ok', emoji: '🐢', stampText: `미션 ${m.id}`, title: '도장 쾅!', desc: `${m.title}\n${QUOTES[c]} (${c}/5)`, again: true });
+      }
+    }
+
+    function claimReward() {
+      if (count() < 5) {
+        showResult({ kind: 'warn', emoji: '🎁', stampText: `${count()}/5`, title: '아직 도장이 모자라요', desc: `리워드는 도장 5개를 모두 모으면 받을 수 있어요. ${5 - count()}개 남았어요.`, again: false });
+        return;
+      }
+      if (state.claimedAt) {
+        showResult({ kind: 'warn', emoji: '🎁', stampText: '교환됨', title: '이미 교환한 도장판이에요', desc: `${hhmm(state.claimedAt)}에 리워드를 받았어요.`, again: false });
+        return;
+      }
+      state.claimedAt = Date.now();
+      save(); renderStamps();
+      vibrate([30, 40, 60]);
+      showResult({ kind: 'ok', emoji: '🎁', stampText: '교환 완료', title: '리워드 교환 완료!', desc: '키캡 키링과 럭키드로우 응모권을 받으세요.\n폐회식 추첨을 기대해주세요!', again: false });
+    }
+
+    let resultAgain = false;
+    function showResult({ kind, emoji, stampText, title, desc, again, goLabel }) {
+      Scanner.pause();
+      const mark = $('#resultMark');
+      mark.className = 'stamp-mark' + (kind === 'warn' ? ' warn' : kind === 'err' ? ' err' : '');
+      void mark.offsetWidth;
+      mark.classList.add('pop');
+      $('#resultEmoji').textContent = emoji;
+      $('#resultStampText').textContent = stampText;
+      $('#resultTitle').textContent = title;
+      $('#resultDesc').innerHTML = desc.split('\n').map(s => s.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]))).join('<br>');
+      resultAgain = again && current === 'scan';
+      $('#resultAgain').hidden = !resultAgain;
+      $('#resultGo').textContent = goLabel || '도장판 보기';
+      openScrim($('#resultModal'));
+      setTimeout(() => $('#resultGo').focus(), 50);
+    }
+    function closeModal() { closeScrim($('#resultModal')); }
+    $('#resultAgain').addEventListener('click', () => { closeModal(); Scanner.resume(); });
+    $('#resultGo').addEventListener('click', () => { closeModal(); if (current === 'stamp') return; go('stamp'); });
+
+    /* ================== QR 스캐너 ================== */
+    const Scanner = (() => {
+      const video = $('#video'), vf = $('#viewfinder'), statusEl = $('#scanStatus');
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
+      let stream = null, raf = 0, paused = false, busy = false, lastTry = 0, detector = null, jsQRReady = null, startToken = 0;
+      let lastBad = 0;
+
+      async function getDecoder() {
+        if (detector !== null) return detector;
+        if ('BarcodeDetector' in window) {
+          try {
+            const fmts = await BarcodeDetector.getSupportedFormats();
+            if (fmts.includes('qr_code')) {
+              const d = new BarcodeDetector({ formats: ['qr_code'] });
+              detector = { name: 'native', decode: async src => { const r = await d.detect(src); return r[0] ? r[0].rawValue : null; } };
+              return detector;
+            }
+          } catch (e) {}
+        }
+        await loadJsQR();
+        detector = {
+          name: 'jsqr',
+          decode: async src => {
+            const w0 = src.videoWidth || src.naturalWidth || src.width, h0 = src.videoHeight || src.naturalHeight || src.height;
+            if (!w0 || !h0) return null;
+            const scale = Math.min(1, 720 / Math.max(w0, h0));
+            canvas.width = Math.round(w0 * scale); canvas.height = Math.round(h0 * scale);
+            ctx.drawImage(src, 0, 0, canvas.width, canvas.height);
+            const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const r = window.jsQR(img.data, img.width, img.height, { inversionAttempts: 'attemptBoth' });
+            return r ? r.data : null;
+          }
+        };
+        return detector;
+      }
+
+      function loadJsQR() {
+        if (window.jsQR) return Promise.resolve();
+        if (!jsQRReady) jsQRReady = new Promise((res, rej) => {
+          const s = document.createElement('script');
+          s.src = 'jsQR.min.js';
+          s.onload = res;
+          s.onerror = () => { jsQRReady = null; rej(new Error('jsqr-load')); };
+          document.head.appendChild(s);
+        });
+        return jsQRReady;
+      }
+
+      function setMsg(text, retry) {
+        vf.classList.remove('running');
+        $('#vfText').textContent = text;
+        $('#camRetry').hidden = !retry;
+      }
+
+      async function start() {
+        const token = ++startToken;
+        paused = false;
+        statusEl.textContent = '';
+        if (stream) { vf.classList.add('running'); loop(); return; }
+        if (!window.isSecureContext) { setMsg('카메라는 https:// 주소에서만 켤 수 있어요. 아래 ‘사진으로 스캔’이나 ‘부스 코드 입력’을 이용해주세요.', false); return; }
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { setMsg('이 브라우저는 카메라 스캔을 지원하지 않아요. 크롬이나 사파리로 열거나 ‘사진으로 스캔’을 이용해주세요.', false); return; }
+        setMsg('카메라를 켜는 중…', false);
+        try {
+          const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false });
+          if (token !== startToken || current !== 'scan') { s.getTracks().forEach(t => t.stop()); return; }
+          stream = s;
+          video.srcObject = s;
+          await video.play().catch(() => {});
+          await getDecoder().catch(() => null);
+          if (!detector) { setMsg('QR 인식 모듈을 불러오지 못했어요. 인터넷 연결을 확인하고 다시 시도해주세요.', true); stop(); return; }
+          vf.classList.add('running');
+          statusEl.textContent = 'QR을 찾는 중…';
+          loop();
+        } catch (err) {
+          if (token !== startToken) return;
+          const n = err && err.name;
+          if (n === 'NotAllowedError' || n === 'SecurityError') setMsg('카메라 권한이 거절됐어요. 브라우저 설정에서 카메라를 허용한 뒤 다시 눌러주세요.', true);
+          else if (n === 'NotFoundError' || n === 'OverconstrainedError') setMsg('사용할 수 있는 카메라가 없어요. ‘사진으로 스캔’이나 ‘부스 코드 입력’을 이용해주세요.', false);
+          else if (n === 'NotReadableError') setMsg('다른 앱이 카메라를 쓰고 있어요. 그 앱을 닫고 다시 눌러주세요.', true);
+          else setMsg('카메라를 켜지 못했어요. 다시 눌러주세요.', true);
+        }
+      }
+
+      function loop() {
+        cancelAnimationFrame(raf);
+        const tick = async t => {
+          raf = requestAnimationFrame(tick);
+          if (paused || busy || !stream || video.readyState < 2) return;
+          if (t - lastTry < (detector && detector.name === 'native' ? 90 : 160)) return;
+          lastTry = t; busy = true;
+          try {
+            const text = await detector.decode(video);
+            if (text && !paused) onText(text);
+          } catch (e) {}
+          busy = false;
+        };
+        raf = requestAnimationFrame(tick);
+      }
+
+      function onText(text) {
+        const code = extractCode(text);
+        if (!code) {
+          const now = Date.now();
+          if (now - lastBad > 2500) { lastBad = now; statusEl.textContent = '부지런 QR이 아니에요. 미션 부스 QR을 비춰주세요.'; vibrate(20); }
+          return;
+        }
+        statusEl.textContent = '인식 완료!';
+        handleCode(code);
+      }
+
+      function stop() {
+        startToken++;
+        cancelAnimationFrame(raf);
+        if (stream) stream.getTracks().forEach(t => t.stop());
+        stream = null;
+        video.srcObject = null;
+        vf.classList.remove('running');
+      }
+
+      async function decodeFile(file) {
+        statusEl.textContent = '사진에서 QR을 찾는 중…';
+        try {
+          await getDecoder();
+          const img = new Image();
+          const url = URL.createObjectURL(file);
+          await new Promise((res, rej) => { img.onload = res; img.onerror = rej; img.src = url; });
+          let text = await detector.decode(img).catch(() => null);
+          if (!text && detector.name === 'native') {
+            // 네이티브가 놓친 사진은 jsQR로 한 번 더 시도
+            await loadJsQR();
+            const scale = Math.min(1, 1280 / Math.max(img.naturalWidth, img.naturalHeight));
+            canvas.width = Math.round(img.naturalWidth * scale); canvas.height = Math.round(img.naturalHeight * scale);
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const r = window.jsQR(data.data, data.width, data.height, { inversionAttempts: 'attemptBoth' });
+            text = r ? r.data : null;
+          }
+          URL.revokeObjectURL(url);
+          if (text) { statusEl.textContent = '인식 완료!'; handleCode(text); }
+          else statusEl.textContent = '사진에서 QR을 찾지 못했어요. QR이 크고 선명하게 나오도록 다시 찍어주세요.';
+        } catch (e) {
+          statusEl.textContent = '사진을 읽지 못했어요. 다른 사진으로 다시 시도해주세요.';
+        }
+      }
+
+      return {
+        start, stop, decodeFile,
+        pause() { paused = true; },
+        resume() { paused = false; lastTry = 0; statusEl.textContent = stream ? 'QR을 찾는 중…' : ''; if (!stream && current === 'scan') start(); }
+      };
+    })();
+
+    $('#camRetry').addEventListener('click', () => Scanner.start());
+    $('#photoBtn').addEventListener('click', () => $('#photoInput').click());
+    $('#photoInput').addEventListener('change', e => { const f = e.target.files[0]; if (f) Scanner.decodeFile(f); e.target.value = ''; });
+    $('#pinToggle').addEventListener('click', () => { const box = $('#pinBox'); box.classList.toggle('open'); if (box.classList.contains('open')) $('#pinInput').focus(); });
+    function submitPin() {
+      const v = $('#pinInput').value.trim();
+      if (!/^\d{4}$/.test(v)) { toast('숫자 4자리를 입력해주세요'); return; }
+      const m = MISSIONS.find(x => x.pin === v);
+      $('#pinInput').value = '';
+      if (m) return grantStamp(m);
+      if (v === CLAIM.pin) return claimReward();
+      toast('맞지 않는 코드예요. 부스 스태프에게 다시 확인해주세요');
+      vibrate(40);
+    }
+    $('#pinSubmit').addEventListener('click', submitPin);
+    $('#pinInput').addEventListener('keydown', e => { if (e.key === 'Enter') submitPin(); });
+    $('#pinInput').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4); });
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) Scanner.stop();
+      else if (current === 'scan' && !$('#resultModal').classList.contains('open')) Scanner.start();
+    });
+
+    /* ================== Confetti ================== */
+    function confetti() {
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const cv = $('#confetti'), c = cv.getContext('2d');
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      cv.width = innerWidth * dpr; cv.height = innerHeight * dpr;
+      c.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const colors = ['#0284c7', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#3b82f6'];
+      const ps = Array.from({ length: 140 }, () => ({
+        x: innerWidth / 2 + (Math.random() - .5) * 60, y: innerHeight * .45,
+        w: Math.random() * 7 + 4, h: Math.random() * 4 + 3,
+        dx: (Math.random() - .5) * 14, dy: -Math.random() * 15 - 4,
+        rot: Math.random() * Math.PI, vr: (Math.random() - .5) * .3,
+        color: colors[(Math.random() * colors.length) | 0], a: 1
+      }));
+      (function frame() {
+        c.clearRect(0, 0, innerWidth, innerHeight);
+        let alive = false;
+        for (const p of ps) {
+          p.x += p.dx; p.y += p.dy; p.dy += .3; p.dx *= .99; p.rot += p.vr; p.a -= .007;
+          if (p.a <= 0) continue;
+          alive = true;
+          c.save(); c.globalAlpha = p.a; c.fillStyle = p.color;
+          c.translate(p.x, p.y); c.rotate(p.rot); c.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+          c.restore();
+        }
+        if (alive) requestAnimationFrame(frame); else c.clearRect(0, 0, innerWidth, innerHeight);
+      })();
+    }
+
+    /* ================== 시작 ================== */
+    renderStamps();
+    render();
+  })();
+  </script>
+</body>
+</html>
