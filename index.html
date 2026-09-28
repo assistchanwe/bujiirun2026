@@ -403,6 +403,41 @@
     .m-tag { flex-shrink: 0; font-size: 11px; font-weight: 800; padding: 5px 9px; border-radius: 7px; background: #e2e8f0; color: #475569; }
     .mission.done .m-tag { background: var(--eco); color: #fff; }
 
+    .race-sub { font-size: 11.5px; font-weight: 700; color: var(--muted); }
+    .board { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+    .slot { display: flex; flex-direction: column; align-items: center; gap: 3px; text-align: center; min-width: 0; }
+    .slot-ring {
+      position: relative; width: 52px; height: 52px; border-radius: 50%;
+      border: 2px dashed #cbd5e1; background: #fff; color: #94a3b8;
+      display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900;
+    }
+    .slot.on .slot-ring { border: 2.5px solid var(--eco-dark); background: #d1fae5; font-size: 24px; transform: rotate(-8deg); }
+    .slot.on .slot-ring b {
+      position: absolute; top: -4px; right: -4px; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 999px;
+      background: var(--orange); color: #fff; font-size: 10.5px; line-height: 18px; transform: rotate(8deg);
+    }
+    .slot.extra .slot-ring { border-color: var(--orange); background: var(--orange-light); }
+    .slot.just .slot-ring { animation: stamp-slam .45s cubic-bezier(.2, 1.4, .4, 1) both; }
+    .slot-name { font-size: 10.5px; font-weight: 700; color: var(--text); line-height: 1.25; word-break: break-all;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .slot:not(.on) .slot-name { color: #94a3b8; }
+    .slot-time { font-size: 10px; color: var(--muted); }
+
+    .modal.quiz { text-align: left; }
+    .quiz-where { display: inline-block; font-size: 11.5px; font-weight: 800; color: var(--primary-dark); background: var(--primary-light); padding: 3px 9px; border-radius: 999px; }
+    .quiz-q { font-size: 17px; font-weight: 900; color: var(--ink); line-height: 1.45; margin: 12px 0 14px; }
+    .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+    .quiz-opt { display: flex; gap: 10px; align-items: center; width: 100%; text-align: left; padding: 13px 14px; border-radius: 12px;
+      border: 1.5px solid var(--line); background: #fff; font-size: 14px; font-weight: 700; color: var(--text); }
+    .quiz-opt b { color: var(--primary); font-size: 16px; }
+    .quiz-opt:active { transform: scale(.98); }
+    .quiz-opt.right { border-color: var(--eco); background: var(--eco-light); color: var(--eco-dark); }
+    .quiz-opt.wrong { border-color: #fca5a5; background: #fef2f2; color: #b91c1c; opacity: .7; animation: shake .3s; }
+    @keyframes shake { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+    .quiz-feedback { min-height: 20px; margin: 12px 0 10px; font-size: 13px; font-weight: 700; }
+    .quiz-feedback.ok { color: var(--eco-dark); }
+    .quiz-feedback.no { color: #b91c1c; }
+
     .goal-box {
       display: none; text-align: center; color: #fff;
       background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
@@ -600,7 +635,7 @@
           <button class="progress-card" data-go="stamp">
             <div class="pc-text">
               <div class="pc-title">🐢 거북이 도장판 <b id="homeCount">0</b> / 5</div>
-              <div class="pc-desc" id="homeStampDesc">미션 부스 QR을 스캔해 도장을 모아보세요</div>
+              <div class="pc-desc" id="homeStampDesc">코스 퀴즈·부스 미션 QR로 도장을 모아보세요</div>
               <div class="pc-dots" id="homeDots"><i></i><i></i><i></i><i></i><i></i></div>
             </div>
             <span class="pc-go">이어서 →</span>
@@ -609,7 +644,7 @@
           <div class="menu-grid">
             <button class="menu-tile wide" data-go="scan">
               <span class="mt-icon"><svg width="24" height="24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><use href="#i-qr"/></svg></span>
-              <span><span class="mt-title">QR 스캔하고 도장 받기</span><br><span class="mt-desc">미션 부스에 붙은 QR을 카메라로 비춰주세요</span></span>
+              <span><span class="mt-title">QR 스캔하고 도장 받기</span><br><span class="mt-desc">걷기 코스 퀴즈 QR과 부스 미션 QR을 비춰주세요</span></span>
             </button>
             <button class="menu-tile" data-go="info">
               <span class="mt-icon">🌱</span><span class="mt-title">행사·다회용기 안내</span><span class="mt-desc">일정, 취지, 쓰레기 없는 행사 수칙</span>
@@ -622,7 +657,7 @@
             </button>
             <button class="menu-tile eco" data-go="stamp">
               <span class="mt-badge" id="tileBadge">0/5</span>
-              <span class="mt-icon">🐢</span><span class="mt-title">거북이 도장판</span><span class="mt-desc">5개 모으면 키캡 키링!</span>
+              <span class="mt-icon">🐢</span><span class="mt-title">거북이 도장판</span><span class="mt-desc">10곳 중 5개 모으면 키링 무료!</span>
             </button>
             <button class="menu-tile org" data-go="partners" style="grid-column:1/-1; min-height:0; flex-direction:row; align-items:center; gap:12px;">
               <span class="mt-icon">🤝</span>
@@ -721,7 +756,7 @@
         <div class="stack">
           <div class="card race">
             <div class="race-head">
-              <div class="race-count">도장 <b id="stampCount">0</b> / 5개</div>
+              <div class="race-count">도장 <b id="stampCount">0</b> / 5개 <span class="race-sub">(10곳 중 아무 5곳)</span></div>
               <button class="link-btn" id="resetBtn">초기화</button>
             </div>
             <div class="track" id="track">
@@ -739,18 +774,23 @@
 
           <div class="goal-box" id="goalBox">
             <h4 id="goalTitle">🎉 거북이가 결승선에 도착했어요!</h4>
-            <p id="goalDesc">5개 미션을 모두 완료했습니다.<br><strong>본부(1번 천막)</strong>에 이 화면을 보여주면<br><strong>‘1구 키캡 키링 & 럭키드로우 응모권’</strong>을 드려요.</p>
+            <p id="goalDesc"></p>
             <div class="claim" id="claimNote">본부 스태프가 교환 QR을 스캔하게 해주세요</div>
           </div>
 
-          <div class="h-sub">미션 부스 5곳</div>
-          <div class="mission-list" id="missionList"></div>
+          <div class="h-sub">📒 내 도장 기록 · 받은 순서대로</div>
+          <div class="board" id="board"></div>
+
+          <div class="h-sub">🚶 걷기 코스 퀴즈 · QR 찍고 문제 맞히기</div>
+          <div class="mission-list" id="quizList"></div>
+          <div class="h-sub">🎪 부스 미션 · 체험하고 QR 찍기</div>
+          <div class="mission-list" id="boothList"></div>
         </div>
       </section>
 
       <!-- ============ QR 스캔 ============ -->
       <section class="screen" data-screen="scan" data-title="QR 스캔">
-        <p class="scan-lead">미션 부스에 붙은 <b>부지런 QR</b>을 네모 칸 안에 맞춰주세요</p>
+        <p class="scan-lead">걷기 코스나 부스에 붙은 <b>부지런 QR</b>을 네모 칸 안에 맞춰주세요</p>
         <div class="viewfinder" id="viewfinder">
           <video id="video" playsinline muted autoplay></video>
           <div class="vf-frame"><i></i><i></i><i></i><i></i></div>
@@ -862,6 +902,17 @@
       </div>
     </div>
 
+    <!-- 코스 퀴즈 모달 -->
+    <div class="scrim center" id="quizModal" aria-hidden="true">
+      <div class="modal quiz" role="dialog" aria-modal="true" aria-labelledby="quizQ">
+        <div class="quiz-where" id="quizWhere"></div>
+        <h3 class="quiz-q" id="quizQ"></h3>
+        <div class="quiz-options" id="quizOptions"></div>
+        <p class="quiz-feedback" id="quizFeedback" aria-live="polite"></p>
+        <button class="btn ghost" id="quizClose">나중에 풀기</button>
+      </div>
+    </div>
+
     <div class="toast" id="toast" role="status"></div>
   </div>
 
@@ -872,26 +923,44 @@
     /* ================== 데이터 ================== */
     // n = 천막 번호 (배치도 이미지 기준). 11·12는 번호 없는 구역(포토존, 무대)의 내부 id.
     const BOOTHS = [
-      { n: 1, name: '본부', short: '상황실 · 의료 · 리워드 교환', cat: 'operation', tone: '', label: '운영·안내', desc: '행사 총괄 본부입니다. 구급상자, 미아보호, 긴급상황 지원을 맡고 있어요. 도장 5개 완주 리워드도 여기서 교환합니다.' },
+      { n: 1, name: '본부', short: '상황실 · 의료 · 리워드 교환', cat: 'operation', tone: '', label: '운영·안내', desc: '행사 총괄 본부입니다. 구급상자, 미아보호, 긴급상황 지원을 맡고 있어요. 도장 5개를 모으면 여기서 키링을 받아요.' },
       { n: 2, name: '참가자 등록 부스', short: '티셔츠·배번표 수령', cat: 'operation', tone: '', label: '운영·안내', desc: '참가자 본인 확인 후 티셔츠·배번표·스트링백을 나눠드립니다. 현장 접수도 이곳에서 해요.' },
       { n: 3, name: '물품보관 & 식수대', short: '비닐 없는 짐보관 · 물 채우기', cat: 'operation', tone: '', label: '운영·안내', desc: '비닐봉투 대신 개인 가방이나 기부받은 종이 쇼핑백에 짐을 보관합니다. 식수대에서 텀블러에 물을 채울 수 있어요.' },
-      { n: 4, name: '텀블러 할인매장 지원사업', short: '텀블러 할인 가게 안내', cat: 'booth', tone: 'eco', label: '친환경', desc: '텀블러를 가져가면 할인해주는 제주의 가게들과 텀블러 할인매장 지원사업을 소개합니다.', mission: 2 },
-      { n: 5, name: '천원의 행복 & 동아리 소개', short: '소원나무 · 참여 동아리 소개', cat: 'booth', tone: 'org', label: '대학생·동아리', desc: '‘천원의 행복’ 부스에서 소원나무에 바람을 적고, 부지런에 함께한 동아리들을 만나보세요.', mission: 1 },
-      { n: 6, name: '부지런한 밥 아저씨 & 한라대 총학', short: '페이스 페인팅 · 양말목 만들기', cat: 'booth', tone: 'org', label: '체험', desc: '부지런한 밥 아저씨의 페이스 페인팅, 한라대 총학생회의 양말목 공예 체험이 열려요.', mission: 3 },
-      { n: 7, name: '바이탈 & 유학생 부스', short: '건강 체크 · 유학생 문화 교류', cat: 'booth', tone: 'org', label: '대학생·동아리', desc: '제주대 간호·보건 동아리 바이탈의 건강 체크와 스트레칭 안내, 유학생들과의 문화 교류 부스입니다.', mission: 4 },
-      { n: 8, name: '바람 부스 & 식수대', short: '환경동아리 바람 · 물 채우기', cat: 'booth', tone: 'eco', label: '친환경', desc: '환경동아리 바람의 기후행동 부스입니다. 옆 식수대에서 텀블러에 물을 채울 수 있어요.', mission: 5 },
+      { n: 4, name: '텀블러 할인매장 지원사업', short: '텀블러 할인 가게 안내', cat: 'booth', tone: 'eco', label: '친환경', desc: '텀블러를 가져가면 할인해주는 제주의 가게들과 텀블러 할인매장 지원사업을 소개합니다.', mission: 'b2' },
+      { n: 5, name: '천원의 행복 & 동아리 소개', short: '소원나무 · 참여 동아리 소개', cat: 'booth', tone: 'org', label: '대학생·동아리', desc: '‘천원의 행복’ 부스에서 소원나무에 바람을 적고, 부지런에 함께한 동아리들을 만나보세요.', mission: 'b1' },
+      { n: 6, name: '부지런한 밥 아저씨 & 한라대 총학', short: '페이스 페인팅 · 양말목 만들기', cat: 'booth', tone: 'org', label: '체험', desc: '부지런한 밥 아저씨의 페이스 페인팅, 한라대 총학생회의 양말목 공예 체험이 열려요.', mission: 'b3' },
+      { n: 7, name: '바이탈 & 유학생 부스', short: '건강 체크 · 유학생 문화 교류', cat: 'booth', tone: 'org', label: '대학생·동아리', desc: '제주대 간호·보건 동아리 바이탈의 건강 체크와 스트레칭 안내, 유학생들과의 문화 교류 부스입니다.', mission: 'b4' },
+      { n: 8, name: '바람 부스 & 식수대', short: '환경동아리 바람 · 물 채우기', cat: 'booth', tone: 'eco', label: '친환경', desc: '환경동아리 바람의 기후행동 부스입니다. 옆 식수대에서 텀블러에 물을 채울 수 있어요.', mission: 'b5' },
       { n: 11, tag: '📷', name: '포토존', short: '완주 인생샷', cat: 'place', tone: '', label: '포토존', desc: '부지런의 추억을 사진으로 남겨보세요.' },
       { n: 12, tag: '🎤', name: '무대 & 관객석', short: '개·폐회식 · 공연 · 준비운동', cat: 'place', tone: '', label: '무대', desc: '개·폐회식, 동아리 공연, 다함께 준비운동이 열리는 무대입니다. 무대 옆 9·10번 천막은 공연 대기실이에요.', stage: true }
     ];
 
     // QR 코드 값: <앱 주소>#/q/<code>. 휴대폰 기본 카메라로 찍어도 앱이 열리며 도장이 찍힌다.
-    const MISSIONS = [
-      { id: 1, title: '소원나무에 바람 적기', where: '5번 부스 · 천원의 행복', booths: [5], how: '소원나무에 바람을 적고 부스의 QR을 스캔하세요.', code: 'BJR-M1-K4H7', pin: '4127' },
-      { id: 2, title: '텀블러 할인매장 알아보기', where: '4번 부스 · 텀블러 할인매장 지원사업', booths: [4], how: '텀블러 할인 가게 안내를 듣고 부스의 QR을 스캔하세요.', code: 'BJR-M2-T7Q2', pin: '7358' },
-      { id: 3, title: '페이스 페인팅 또는 양말목 만들기', where: '6번 부스 · 밥 아저씨 & 한라대 총학', booths: [6], how: '두 체험 중 하나에 참여하고 부스의 QR을 스캔하세요.', code: 'BJR-M3-R8N5', pin: '8264' },
-      { id: 4, title: '건강 체크 또는 유학생 교류', where: '7번 부스 · 바이탈 & 유학생', booths: [7], how: '건강 체크나 유학생 부스에 참여하고 QR을 스캔하세요.', code: 'BJR-M4-V9C3', pin: '9105' },
-      { id: 5, title: '바람 기후행동 참여', where: '8번 부스 · 바람', booths: [8], how: '바람 부스 활동에 참여하고 QR을 스캔하세요.', code: 'BJR-M5-G5W8', pin: '5693' }
+    // 도장을 받을 수 있는 곳: 부스 미션(booth) + 걷기 코스 퀴즈(quiz). 이 중 아무거나 GOAL개를 모으면 완주.
+    // 퀴즈 QR을 찍으면 문제가 나오고, 맞혀야 도장이 찍힌다.
+    const STAMPS = [
+      { id: 'b1', type: 'booth', title: '소원나무에 바람 적기', where: '5번 부스 · 천원의 행복', booth: 5, how: '소원나무에 바람을 적고 부스의 QR을 스캔하세요.', code: 'BJR-M1-K4H7', pin: '4127' },
+      { id: 'b2', type: 'booth', title: '텀블러 할인매장 알아보기', where: '4번 부스 · 텀블러 할인매장 지원사업', booth: 4, how: '텀블러 할인 가게 안내를 듣고 부스의 QR을 스캔하세요.', code: 'BJR-M2-T7Q2', pin: '7358' },
+      { id: 'b3', type: 'booth', title: '페이스 페인팅 또는 양말목 만들기', where: '6번 부스 · 밥 아저씨 & 한라대 총학', booth: 6, how: '두 체험 중 하나에 참여하고 부스의 QR을 스캔하세요.', code: 'BJR-M3-R8N5', pin: '8264' },
+      { id: 'b4', type: 'booth', title: '건강 체크 또는 유학생 교류', where: '7번 부스 · 바이탈 & 유학생', booth: 7, how: '건강 체크나 유학생 부스에 참여하고 QR을 스캔하세요.', code: 'BJR-M4-V9C3', pin: '9105' },
+      { id: 'b5', type: 'booth', title: '바람 기후행동 참여', where: '8번 부스 · 바람', booth: 8, how: '바람 부스 활동에 참여하고 QR을 스캔하세요.', code: 'BJR-M5-G5W8', pin: '5693' },
+      { id: 'q1', type: 'quiz', title: '코스 퀴즈 ① 쓰레기 없는 행사', where: '걷기 코스 QR ①', code: 'BJR-Q1-A3F6', pin: '1374',
+        q: '부지런 행사장에 일부러 두지 않은 것은 무엇일까요?', options: ['쓰레기통', '식수대', '물품보관소'], answer: 0,
+        explain: '쓰레기통이 없어요. 내 쓰레기는 내가 되가져가요!' },
+      { id: 'q2', type: 'quiz', title: '코스 퀴즈 ② 플라스틱 프리 제주', where: '걷기 코스 QR ②', code: 'BJR-Q2-P8D1', pin: '2851',
+        q: '‘2040 플라스틱 프리 제주’에서 2040은 무엇일까요?', options: ['행사 참가자 수', '플라스틱 없는 제주를 이루려는 목표 연도', '걷기 코스 길이(m)'], answer: 1,
+        explain: '2040년까지 플라스틱 없는 제주를 만드는 것이 목표예요.' },
+      { id: 'q3', type: 'quiz', title: '코스 퀴즈 ③ 반환점', where: '걷기 코스 QR ③', code: 'BJR-Q3-H2K9', pin: '3962',
+        q: '오늘 걷기 코스의 반환점은 어디일까요?', options: ['용두암', '도두봉', '사라봉'], answer: 1,
+        explain: '도두봉을 돌아 용담레포츠공원으로 돌아와요.' },
+      { id: 'q4', type: 'quiz', title: '코스 퀴즈 ④ 완주 메달', where: '걷기 코스 QR ④', code: 'BJR-Q4-M5T3', pin: '4583',
+        q: '부지런의 완주 메달은 무엇으로 만들까요?', options: ['재활용 금속', '내가 달고 걸은 배번표', '플라스틱 병뚜껑'], answer: 1,
+        explain: '배번표를 접어 종이 메달로 업사이클링해요.' },
+      { id: 'q5', type: 'quiz', title: '코스 퀴즈 ⑤ 천원의 학식', where: '걷기 코스 QR ⑤', code: 'BJR-Q5-W7N4', pin: '5217',
+        q: '‘천원의 학식’ 서명에 함께한 대학생은 약 몇 명일까요?', options: ['약 190명', '약 1,900명', '약 19,000명'], answer: 1,
+        explain: '약 1,900명의 대학생이 서명으로 연대했어요.' }
     ];
+    const GOAL = 5;
     const CLAIM = { code: 'BJR-CLAIM-X2P9', pin: '0203' }; // 본부(1번 천막) 리워드 교환용
 
     const QUOTES = [
@@ -932,11 +1001,14 @@
     const hhmm = ts => { const d = new Date(ts); return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); };
 
     /* ================== 상태 저장 ================== */
-    const KEY = 'bujiirun2026.state.v1';
+    const KEY = 'bujiirun2026.state.v2';
     let state = { stamps: {}, claimedAt: null };
     try { const raw = localStorage.getItem(KEY); if (raw) state = Object.assign(state, JSON.parse(raw)); } catch (e) {}
     function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
-    const count = () => MISSIONS.filter(m => state.stamps[m.id]).length;
+    // 받은 순서대로 정렬된 도장 목록
+    const acquired = () => STAMPS.filter(m => state.stamps[m.id]).sort((x, y) => state.stamps[x.id] - state.stamps[y.id]);
+    const count = () => acquired().length;
+    const orderOf = id => acquired().findIndex(m => m.id === id) + 1;
 
     /* ================== 라우터 ================== */
     let current = null;
@@ -970,7 +1042,7 @@
       $$('[data-nav]').forEach(b => b.classList.toggle('active', b.dataset.nav === route));
       $('#topTitle').textContent = TITLES[route];
       document.title = route === 'home' ? '부지런 2026' : TITLES[route] + ' · 부지런 2026';
-      closeSheet(); closeModal();
+      closeSheet(); closeModal(); closeQuiz();
       window.scrollTo(0, 0);
       if (route === 'scan') Scanner.start();
       if (route === 'timetable' || route === 'home') updateNow();
@@ -1017,13 +1089,13 @@
       if (b.tag) $('#sheetTitle').textContent = b.name;
       $('#sheetCat').textContent = b.label;
       $('#sheetDesc').textContent = b.desc;
-      const m = b.mission && MISSIONS.find(x => x.id === b.mission);
+      const m = b.mission && STAMPS.find(x => x.id === b.mission);
       $('#sheetMission').hidden = !m;
       $('#sheetScan').hidden = !m || !!state.stamps[m.id];
       if (m) {
         const done = state.stamps[m.id];
-        $('#sheetMissionTitle').textContent = `🐢 도장 미션 ${m.id} · ${m.title}` + (done ? ' (완료)' : '');
-        $('#sheetMissionDesc').textContent = done ? `${hhmm(done)}에 도장을 받았어요.` : m.how;
+        $('#sheetMissionTitle').textContent = `🐢 도장 미션 · ${m.title}` + (done ? ' (완료)' : '');
+        $('#sheetMissionDesc').textContent = done ? `${hhmm(done)}에 ${orderOf(m.id)}번째 도장으로 받았어요.` : m.how;
       }
       openScrim($('#boothSheet'));
     }
@@ -1033,7 +1105,7 @@
     function closeScrim(el) { el.classList.remove('open'); el.setAttribute('aria-hidden', 'true'); }
     function closeSheet() { closeScrim($('#boothSheet')); $$('.booth', grid).forEach(el => el.classList.remove('selected')); }
     $('#boothSheet').addEventListener('click', e => { if (e.target.id === 'boothSheet' || e.target.closest('[data-close]')) closeSheet(); });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeSheet(); closeModal(); } });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeSheet(); closeModal(); closeQuiz(); } });
 
     /* ================== 타임테이블 ================== */
     const tl = $('#timeline');
@@ -1073,52 +1145,70 @@
     setInterval(updateNow, 60000);
 
     /* ================== 도장판 ================== */
-    const list = $('#missionList');
-    list.innerHTML = MISSIONS.map(m => `
+    const missionRow = m => `
       <button class="mission" data-mission="${m.id}">
-        <span class="m-circle">${m.id}</span>
+        <span class="m-circle">${m.type === 'quiz' ? '❓' : '🎪'}</span>
         <span class="m-info"><span class="m-name">${m.title}</span><br><span class="m-booth">${m.where}</span></span>
-        <span class="m-tag">QR 스캔</span>
-      </button>`).join('');
-    list.addEventListener('click', e => {
+        <span class="m-tag">${m.type === 'quiz' ? 'QR·퀴즈' : 'QR 스캔'}</span>
+      </button>`;
+    $('#quizList').innerHTML = STAMPS.filter(m => m.type === 'quiz').map(missionRow).join('');
+    $('#boothList').innerHTML = STAMPS.filter(m => m.type === 'booth').map(missionRow).join('');
+    $('[data-screen="stamp"]').addEventListener('click', e => {
       const el = e.target.closest('.mission');
       if (!el) return;
-      const m = MISSIONS.find(x => x.id === +el.dataset.mission);
-      openBooth(m.booths[0]);
+      const m = STAMPS.find(x => x.id === el.dataset.mission);
+      if (m.type === 'booth') openBooth(m.booth);
+      else if (state.stamps[m.id]) toast(`${m.title} · ${orderOf(m.id)}번째 도장으로 받았어요`);
+      else toast('걷기 코스에 있는 퀴즈 QR을 찾아 찍어보세요!');
     });
 
     function renderStamps(justId) {
-      const c = count();
-      MISSIONS.forEach(m => {
+      const got = acquired();
+      const c = got.length;
+      const p = Math.min(c, GOAL);
+      STAMPS.forEach(m => {
         const el = $(`.mission[data-mission="${m.id}"]`);
         const done = state.stamps[m.id];
         el.classList.toggle('done', !!done);
         el.classList.toggle('just', justId === m.id);
-        $('.m-circle', el).textContent = done ? '🐢' : m.id;
-        $('.m-tag', el).textContent = done ? `${hhmm(done)} 완료` : 'QR 스캔';
+        $('.m-circle', el).textContent = done ? '🐢' : (m.type === 'quiz' ? '❓' : '🎪');
+        $('.m-tag', el).textContent = done ? `${orderOf(m.id)}번째 · ${hhmm(done)}` : (m.type === 'quiz' ? 'QR·퀴즈' : 'QR 스캔');
         $$(`[data-mission-tag="${m.id}"]`).forEach(t => { t.classList.toggle('done', !!done); t.textContent = done ? '🐢 완료' : '🐢 도장'; });
       });
-      $('#stampCount').textContent = c;
+
+      // 도장판: 받은 순서대로 칸을 채운다 (최소 GOAL칸, 넘치면 늘어남)
+      const slots = Math.max(GOAL, c);
+      $('#board').innerHTML = Array.from({ length: slots }, (_, i) => {
+        const m = got[i];
+        if (!m) return `<div class="slot"><span class="slot-ring">${i + 1}</span><span class="slot-name">빈 칸</span></div>`;
+        return `<div class="slot on${justId === m.id ? ' just' : ''}${i >= GOAL ? ' extra' : ''}">
+          <span class="slot-ring">🐢<b>${i + 1}</b></span>
+          <span class="slot-name">${m.type === 'quiz' ? '퀴즈' : '부스'} · ${m.title.replace(/^코스 퀴즈 \S+ /, '')}</span>
+          <span class="slot-time">${hhmm(state.stamps[m.id])}</span>
+        </div>`;
+      }).join('');
+
+      $('#stampCount').textContent = p;
       $('#navBadge').textContent = c;
-      $('#homeCount').textContent = c;
-      $('#tileBadge').textContent = `${c}/5`;
-      $$('#homeDots i').forEach((d, i) => d.classList.toggle('on', i < c));
-      $('#homeStampDesc').textContent = c === 5 ? (state.claimedAt ? '완주 리워드 교환 완료!' : '완주! 본부(1번 천막)에서 리워드를 받으세요') : c === 0 ? '미션 부스 QR을 스캔해 도장을 모아보세요' : `${5 - c}개만 더 모으면 완주!`;
+      $('#homeCount').textContent = p;
+      $('#tileBadge').textContent = `${p}/5`;
+      $$('#homeDots i').forEach((d, i) => d.classList.toggle('on', i < p));
+      $('#homeStampDesc').textContent = c >= GOAL ? (state.claimedAt ? '키링 교환 완료!' : '완주! 본부(1번 천막)에서 키링을 받으세요') : c === 0 ? '코스 퀴즈·부스 미션 QR로 도장을 모아보세요' : `${GOAL - c}개만 더 모으면 키링!`;
 
       // 거북이 위치: 출발(4px) ~ 깃발 앞(100% - 72px)
       const runner = $('#runner'), bubble = $('#bubble');
-      runner.style.left = `calc((100% - 76px) * ${c / 5} + 4px)`;
-      bubble.textContent = QUOTES[c];
-      bubble.className = 'bubble' + (c <= 1 ? ' al' : c >= 4 ? ' ar' : '');
+      runner.style.left = `calc((100% - 76px) * ${p / GOAL} + 4px)`;
+      bubble.textContent = QUOTES[p];
+      bubble.className = 'bubble' + (p <= 1 ? ' al' : p >= 4 ? ' ar' : '');
 
       const box = $('#goalBox');
-      box.classList.toggle('show', c === 5);
+      box.classList.toggle('show', c >= GOAL);
       box.classList.toggle('claimed', !!state.claimedAt);
-      $('#goalTitle').textContent = state.claimedAt ? '✅ 완주 리워드 교환 완료' : '🎉 거북이가 결승선에 도착했어요!';
+      $('#goalTitle').textContent = state.claimedAt ? '✅ 키링 교환 완료' : '🎉 거북이가 결승선에 도착했어요!';
       $('#goalDesc').innerHTML = state.claimedAt
-        ? '5개 미션을 모두 완료하고 리워드를 받았어요.<br>함께 걸어줘서 고마워요!'
-        : '5개 미션을 모두 완료했습니다.<br><strong>본부(1번 천막)</strong>에 이 화면을 보여주면<br><strong>‘1구 키캡 키링 & 럭키드로우 응모권’</strong>을 드려요.';
-      $('#claimNote').textContent = state.claimedAt ? `${hhmm(state.claimedAt)}에 교환했어요. 폐회식 럭키드로우를 기대해주세요!` : '본부 스태프에게 교환 QR 스캔을 요청하세요';
+        ? '도장 5개를 모으고 키링을 받았어요.<br>함께 걸어줘서 고마워요!'
+        : '도장 5개를 모두 모았어요!<br><strong>본부(1번 천막)</strong>에 이 화면을 보여주면<br><strong>업사이클링 키캡 키링</strong>을 무료로 드려요.';
+      $('#claimNote').textContent = state.claimedAt ? `${hhmm(state.claimedAt)}에 키링을 받았어요.` : '본부 스태프에게 교환 QR 스캔을 요청하세요';
     }
 
     $('#resetBtn').addEventListener('click', () => {
@@ -1136,8 +1226,8 @@
 
     function handleCode(raw) {
       const code = extractCode(raw) || String(raw || '').toUpperCase();
-      const mission = MISSIONS.find(m => m.code === code);
-      if (mission) return grantStamp(mission);
+      const mission = STAMPS.find(m => m.code === code);
+      if (mission) return mission.type === 'quiz' ? openQuiz(mission) : grantStamp(mission);
       if (code === CLAIM.code) return claimReward();
       const bm = code.match(/^BJR-B(\d{1,2})$/);
       if (bm && BOOTHS.some(b => b.n === +bm[1])) {
@@ -1145,12 +1235,12 @@
         setTimeout(() => openBooth(+bm[1]), 250);
         return;
       }
-      showResult({ kind: 'err', emoji: '❓', stampText: 'NO', title: '부지런 QR이 아니에요', desc: '미션 부스에 붙은 부지런 QR을 스캔해주세요.', again: true, goLabel: '도장판 보기' });
+      showResult({ kind: 'err', emoji: '❓', stampText: 'NO', title: '부지런 QR이 아니에요', desc: '부스나 걷기 코스에 붙은 부지런 QR을 스캔해주세요.', again: true, goLabel: '도장판 보기' });
     }
 
     function grantStamp(m) {
       if (state.stamps[m.id]) {
-        showResult({ kind: 'warn', emoji: '🐢', stampText: '완료', title: '이미 받은 도장이에요', desc: `미션 ${m.id} · ${m.title}\n${hhmm(state.stamps[m.id])}에 받았어요. 다른 미션 부스를 찾아가보세요!`, again: true });
+        showResult({ kind: 'warn', emoji: '🐢', stampText: '완료', title: '이미 받은 도장이에요', desc: `${m.title}\n${hhmm(state.stamps[m.id])}에 ${orderOf(m.id)}번째 도장으로 받았어요. 다른 곳을 찾아가보세요!`, again: true });
         return;
       }
       state.stamps[m.id] = Date.now();
@@ -1158,17 +1248,54 @@
       const c = count();
       renderStamps(m.id);
       vibrate([30, 40, 60]);
-      if (c === 5) {
-        showResult({ kind: 'ok', emoji: '🏁', stampText: '완주', title: '5개 모두 완료! 결승선 도착!', desc: '본부(1번 천막)에 도장판 화면을 보여주고\n1구 키캡 키링 & 럭키드로우 응모권을 받으세요.', again: false });
+      if (c === GOAL) {
+        showResult({ kind: 'ok', emoji: '🏁', stampText: '완주', title: '도장 5개 완성! 결승선 도착!', desc: '본부(1번 천막)에 도장판 화면을 보여주고\n업사이클링 키캡 키링을 무료로 받으세요.', again: false });
         confetti();
+      } else if (c > GOAL) {
+        showResult({ kind: 'ok', emoji: '🐢', stampText: `${c}번째`, title: '보너스 도장 쾅!', desc: `${m.title}\n이미 완주했지만 도장을 하나 더 모았어요!`, again: true });
       } else {
-        showResult({ kind: 'ok', emoji: '🐢', stampText: `미션 ${m.id}`, title: '도장 쾅!', desc: `${m.title}\n${QUOTES[c]} (${c}/5)`, again: true });
+        showResult({ kind: 'ok', emoji: '🐢', stampText: `${c}번째`, title: `${c}번째 도장 쾅!`, desc: `${m.title}\n${QUOTES[c]} (${c}/${GOAL})`, again: true });
       }
     }
 
+    /* ================== 코스 퀴즈 ================== */
+    let quizMission = null;
+    function openQuiz(m) {
+      Scanner.pause();
+      if (state.stamps[m.id]) return grantStamp(m); // 이미 받은 도장 안내
+      quizMission = m;
+      $('#quizWhere').textContent = m.where;
+      $('#quizQ').textContent = m.q;
+      $('#quizFeedback').textContent = '';
+      $('#quizFeedback').className = 'quiz-feedback';
+      $('#quizOptions').innerHTML = m.options.map((o, i) => `<button class="quiz-opt" data-i="${i}"><b>${'①②③④'[i]}</b>${o}</button>`).join('');
+      openScrim($('#quizModal'));
+    }
+    function closeQuiz() { closeScrim($('#quizModal')); quizMission = null; }
+    $('#quizOptions').addEventListener('click', e => {
+      const btn = e.target.closest('.quiz-opt');
+      if (!btn || !quizMission || btn.disabled) return;
+      const m = quizMission;
+      if (+btn.dataset.i === m.answer) {
+        btn.classList.add('right');
+        $$('.quiz-opt', $('#quizOptions')).forEach(b => b.disabled = true);
+        $('#quizFeedback').textContent = '정답! ' + m.explain;
+        $('#quizFeedback').className = 'quiz-feedback ok';
+        vibrate(30);
+        setTimeout(() => { closeQuiz(); grantStamp(m); }, 1100);
+      } else {
+        btn.classList.add('wrong');
+        btn.disabled = true;
+        $('#quizFeedback').textContent = '아쉬워요! 다시 골라보세요.';
+        $('#quizFeedback').className = 'quiz-feedback no';
+        vibrate([40, 40, 40]);
+      }
+    });
+    $('#quizClose').addEventListener('click', () => { closeQuiz(); if (current === 'scan') Scanner.resume(); });
+
     function claimReward() {
-      if (count() < 5) {
-        showResult({ kind: 'warn', emoji: '🎁', stampText: `${count()}/5`, title: '아직 도장이 모자라요', desc: `리워드는 도장 5개를 모두 모으면 받을 수 있어요. ${5 - count()}개 남았어요.`, again: false });
+      if (count() < GOAL) {
+        showResult({ kind: 'warn', emoji: '🎁', stampText: `${count()}/5`, title: '아직 도장이 모자라요', desc: `키링은 도장 5개를 모으면 받을 수 있어요. ${GOAL - count()}개 남았어요.`, again: false });
         return;
       }
       if (state.claimedAt) {
@@ -1178,7 +1305,7 @@
       state.claimedAt = Date.now();
       save(); renderStamps();
       vibrate([30, 40, 60]);
-      showResult({ kind: 'ok', emoji: '🎁', stampText: '교환 완료', title: '리워드 교환 완료!', desc: '키캡 키링과 럭키드로우 응모권을 받으세요.\n폐회식 추첨을 기대해주세요!', again: false });
+      showResult({ kind: 'ok', emoji: '🎁', stampText: '교환 완료', title: '키링 교환 완료!', desc: '업사이클링 키캡 키링을 받으세요.\n함께 걸어줘서 고마워요!', again: false });
     }
 
     let resultAgain = false;
@@ -1306,7 +1433,7 @@
         const code = extractCode(text);
         if (!code) {
           const now = Date.now();
-          if (now - lastBad > 2500) { lastBad = now; statusEl.textContent = '부지런 QR이 아니에요. 미션 부스 QR을 비춰주세요.'; vibrate(20); }
+          if (now - lastBad > 2500) { lastBad = now; statusEl.textContent = '부지런 QR이 아니에요. 부스나 코스의 부지런 QR을 비춰주세요.'; vibrate(20); }
           return;
         }
         statusEl.textContent = '인식 완료!';
@@ -1362,9 +1489,9 @@
     function submitPin() {
       const v = $('#pinInput').value.trim();
       if (!/^\d{4}$/.test(v)) { toast('숫자 4자리를 입력해주세요'); return; }
-      const m = MISSIONS.find(x => x.pin === v);
+      const m = STAMPS.find(x => x.pin === v);
       $('#pinInput').value = '';
-      if (m) return grantStamp(m);
+      if (m) return m.type === 'quiz' ? openQuiz(m) : grantStamp(m);
       if (v === CLAIM.pin) return claimReward();
       toast('맞지 않는 코드예요. 부스 스태프에게 다시 확인해주세요');
       vibrate(40);
