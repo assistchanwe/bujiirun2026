@@ -262,7 +262,7 @@
     .legend { display: flex; flex-wrap: wrap; gap: 10px; font-size: 11.5px; color: var(--muted); }
     .legend span { display: flex; align-items: center; gap: 5px; }
     .legend i { width: 10px; height: 10px; border-radius: 3px; background: var(--primary); }
-    .legend i.eco { background: var(--eco); } .legend i.org { background: var(--orange); }
+    .legend i.eco { background: var(--eco); } .legend i.club { background: var(--orange); }
 
     /* ---------- Bottom sheet & modal ---------- */
     .scrim {
@@ -657,8 +657,8 @@
             <p class="info-desc">행사장에는 쓰레기통이 없습니다. 내가 가져온 쓰레기는 내가 되가져가는 <strong>LNT 원칙</strong>으로 쓰레기 0에 함께해주세요.</p>
             <div class="eco-list">
               <div class="eco-item"><span class="ei">🥤</span><div><h4>개인 텀블러 필수 지참</h4><p>종이컵·페트병을 두지 않습니다. 대용량 급수대에서 텀블러에 물을 채워주세요.</p></div></div>
-              <div class="eco-item"><span class="ei">🍽️</span><div><h4>리턴잇 다회용기 & 반납존</h4><p>완주 비빔밥은 세척·재사용 다회용기에 담겨 나갑니다. 식사 후 <strong>6번 부스 반납존</strong>에 돌려주세요.</p></div></div>
-              <div class="eco-item"><span class="ei">🏅</span><div><h4>배번표로 만드는 종이 메달</h4><p>금속 메달 대신, 달고 걸은 배번표를 접어 나만의 업사이클링 메달을 만듭니다. (5번 부스)</p></div></div>
+              <div class="eco-item"><span class="ei">🍽️</span><div><h4>리턴잇 다회용기 & 반납존</h4><p>완주 비빔밥은 세척·재사용 다회용기에 담겨 나갑니다. 식사 후 <strong>완주 기념 부스 반납존</strong>에 돌려주세요.</p></div></div>
+              <div class="eco-item"><span class="ei">🏅</span><div><h4>배번표로 만드는 종이 메달</h4><p>금속 메달 대신, 달고 걸은 배번표를 접어 나만의 업사이클링 메달을 만듭니다. (17:30 완주 기념 부스)</p></div></div>
               <div class="eco-item"><span class="ei">🛍️</span><div><h4>비닐 없는 짐보관</h4><p>비닐봉투를 드리지 않아요. 에코백·배낭을 챙기거나 기부받은 종이 쇼핑백을 이용해주세요.</p></div></div>
             </div>
           </div>
@@ -669,7 +669,7 @@
               <li>기본은 우측통행, 추월은 왼쪽으로 한 뒤 다시 오른쪽으로</li>
               <li>일행과 나란히 길을 가로막지 않기</li>
               <li>횡단보도·삼거리에서는 안전요원 안내 따르기</li>
-              <li>몸이 불편하면 가까운 스태프나 2번 부스(본부·의료)로</li>
+              <li>몸이 불편하면 가까운 스태프나 1번 천막 본부로</li>
             </ul>
           </div>
 
@@ -688,18 +688,17 @@
           </a>
           <p class="screen-lead">부스를 누르면 자세한 안내가 열려요.</p>
           <div class="chip-row" id="boothFilter" role="tablist">
-            <button class="chip active" data-cat="all">전체 부스 (12)</button>
-            <button class="chip" data-cat="operation">운영·안내</button>
-            <button class="chip" data-cat="eco">친환경·체험</button>
-            <button class="chip" data-cat="student">대학생·동아리</button>
-            <button class="chip" data-cat="food">음식·반납</button>
+            <button class="chip active" data-cat="all">전체</button>
+            <button class="chip" data-cat="operation">운영·안내 (1~3)</button>
+            <button class="chip" data-cat="booth">체험 부스 (4~8)</button>
+            <button class="chip" data-cat="place">포토존·무대</button>
           </div>
           <div class="ground">
-            <div class="zone-label">🚩 휴식 공간 천막 존 (A구역)</div>
+            <div class="zone-label">🚩 용담레포츠공원 천막 존</div>
             <div class="booth-grid" id="boothGrid"></div>
           </div>
           <div class="legend">
-            <span><i></i>운영</span><span><i class="eco"></i>친환경</span><span><i class="org"></i>대학생·자치</span><span>🐢 도장 미션 부스</span>
+            <span><i></i>운영</span><span><i class="eco"></i>친환경</span><span><i class="club"></i>동아리·체험</span><span>🐢 도장 미션 부스</span>
           </div>
         </div>
       </section>
@@ -740,7 +739,7 @@
 
           <div class="goal-box" id="goalBox">
             <h4 id="goalTitle">🎉 거북이가 결승선에 도착했어요!</h4>
-            <p id="goalDesc">5개 미션을 모두 완료했습니다.<br><strong>본부(2번 부스)</strong>에 이 화면을 보여주면<br><strong>‘1구 키캡 키링 & 럭키드로우 응모권’</strong>을 드려요.</p>
+            <p id="goalDesc">5개 미션을 모두 완료했습니다.<br><strong>본부(1번 천막)</strong>에 이 화면을 보여주면<br><strong>‘1구 키캡 키링 & 럭키드로우 응모권’</strong>을 드려요.</p>
             <div class="claim" id="claimNote">본부 스태프가 교환 QR을 스캔하게 해주세요</div>
           </div>
 
@@ -871,30 +870,29 @@
     'use strict';
 
     /* ================== 데이터 ================== */
+    // n = 천막 번호 (배치도 이미지 기준). 11·12는 번호 없는 구역(포토존, 무대)의 내부 id.
     const BOOTHS = [
-      { n: 1, name: '참가자 등록 부스', short: '티셔츠·배번표 수령', cat: 'operation', tone: '', label: '운영·안내', desc: '참가자 본인 확인 후 티셔츠·배번표·스트링백을 나눠드립니다. 현장 접수도 이곳에서 해요.' },
-      { n: 2, name: '부지런 본부·의료', short: '상황실 & 안전 지원', cat: 'operation', tone: '', label: '운영·안내', desc: '행사 총괄 본부입니다. 구급상자, 미아보호, 긴급상황 지원을 맡고 있어요. 도장 5개 완주 리워드도 여기서 교환합니다.' },
-      { n: 3, name: '물품보관소', short: '비닐 없는 짐보관', cat: 'operation', tone: '', label: '운영·안내', desc: '비닐봉투 대신 개인 가방이나 기부받은 종이 쇼핑백에 짐을 보관합니다.' },
-      { n: 4, name: '천원의 행복 홍보관', short: '학식 서명 & 소원 트리', cat: 'student', tone: 'org', label: '대학생·자치', desc: '부지런 자체 홍보부스입니다. ‘천원의 행복’ 서명 운동, 소원 트리 쓰기, 대학생 자치 의제를 나눠요.', mission: 1 },
-      { n: 5, name: '배번표 메달접기', short: '업사이클링 종이 메달', cat: 'eco', tone: 'eco', label: '친환경·체험', desc: '완주 후 배번표를 접어 나만의 업사이클링 종이 메달을 만듭니다. 완주 후 17:30부터 열려요.', mission: 5 },
-      { n: 6, name: '음식나눔 & 다회용기 반납존', short: '완주 비빔밥 & 용기 반납', cat: 'food', tone: 'eco', label: '음식·반납', desc: '리턴잇 다회용기에 담긴 완주 기념 비빔밥을 받고, 다 먹은 용기를 반납하는 곳입니다. 완주 후 17:30부터 열려요.', mission: 5 },
-      { n: 7, name: '꽃마리 & 비굳커피', short: '리필 스테이션 & 텀블러', cat: 'eco', tone: 'eco', label: '친환경·체험', desc: '친환경 세제 리필 스테이션과 텀블러 할인 매장 지원사업을 소개합니다.', mission: 2 },
-      { n: 8, name: '아름다운가게 제주', short: '자원순환 나눔', cat: 'eco', tone: 'eco', label: '친환경·체험', desc: '자원순환 나눔 부스입니다. 기부 물품 전시와 제로웨이스트 실천을 함께해요.', mission: 3 },
-      { n: 9, name: '바이탈 (VITAL)', short: '혈압 체크 & 스트레칭', cat: 'student', tone: 'org', label: '대학생·동아리', desc: '제주대 간호·보건 봉사동아리가 혈압 체크와 걷기 전 스트레칭을 안내합니다.', mission: 4 },
-      { n: 10, name: '바람 & JPC 포토존', short: '기후 퀴즈 & 완주 인생샷', cat: 'student', tone: 'org', label: '대학생·동아리', desc: '환경동아리 바람의 기후행동 퀴즈와 사진동아리 JPC의 완주 인생샷 포토존입니다.', mission: 4 },
-      { n: 11, name: '한라대 총학 & 글로컬', short: '대학 자치 연대', cat: 'student', tone: 'org', label: '대학생·자치', desc: '도내 대학 자치 연대와 외국인 유학생 문화 교류 부스입니다.' },
-      { n: 12, name: '메인 무대 (잔디운동장)', short: '개·폐회식, 공연, 준비운동', cat: 'operation', tone: '', label: '다목적 잔디운동장', desc: '개·폐회식, 동아리 공연, 다함께 준비운동 체조가 열리는 메인 무대입니다.', stage: true }
+      { n: 1, name: '본부', short: '상황실 · 의료 · 리워드 교환', cat: 'operation', tone: '', label: '운영·안내', desc: '행사 총괄 본부입니다. 구급상자, 미아보호, 긴급상황 지원을 맡고 있어요. 도장 5개 완주 리워드도 여기서 교환합니다.' },
+      { n: 2, name: '참가자 등록 부스', short: '티셔츠·배번표 수령', cat: 'operation', tone: '', label: '운영·안내', desc: '참가자 본인 확인 후 티셔츠·배번표·스트링백을 나눠드립니다. 현장 접수도 이곳에서 해요.' },
+      { n: 3, name: '물품보관 & 식수대', short: '비닐 없는 짐보관 · 물 채우기', cat: 'operation', tone: '', label: '운영·안내', desc: '비닐봉투 대신 개인 가방이나 기부받은 종이 쇼핑백에 짐을 보관합니다. 식수대에서 텀블러에 물을 채울 수 있어요.' },
+      { n: 4, name: '텀블러 할인매장 지원사업', short: '텀블러 할인 가게 안내', cat: 'booth', tone: 'eco', label: '친환경', desc: '텀블러를 가져가면 할인해주는 제주의 가게들과 텀블러 할인매장 지원사업을 소개합니다.', mission: 2 },
+      { n: 5, name: '천원의 행복 & 동아리 소개', short: '소원나무 · 참여 동아리 소개', cat: 'booth', tone: 'org', label: '대학생·동아리', desc: '‘천원의 행복’ 부스에서 소원나무에 바람을 적고, 부지런에 함께한 동아리들을 만나보세요.', mission: 1 },
+      { n: 6, name: '부지런한 밥 아저씨 & 한라대 총학', short: '페이스 페인팅 · 양말목 만들기', cat: 'booth', tone: 'org', label: '체험', desc: '부지런한 밥 아저씨의 페이스 페인팅, 한라대 총학생회의 양말목 공예 체험이 열려요.', mission: 3 },
+      { n: 7, name: '바이탈 & 유학생 부스', short: '건강 체크 · 유학생 문화 교류', cat: 'booth', tone: 'org', label: '대학생·동아리', desc: '제주대 간호·보건 동아리 바이탈의 건강 체크와 스트레칭 안내, 유학생들과의 문화 교류 부스입니다.', mission: 4 },
+      { n: 8, name: '바람 부스 & 식수대', short: '환경동아리 바람 · 물 채우기', cat: 'booth', tone: 'eco', label: '친환경', desc: '환경동아리 바람의 기후행동 부스입니다. 옆 식수대에서 텀블러에 물을 채울 수 있어요.', mission: 5 },
+      { n: 11, tag: '📷', name: '포토존', short: '완주 인생샷', cat: 'place', tone: '', label: '포토존', desc: '부지런의 추억을 사진으로 남겨보세요.' },
+      { n: 12, tag: '🎤', name: '무대 & 관객석', short: '개·폐회식 · 공연 · 준비운동', cat: 'place', tone: '', label: '무대', desc: '개·폐회식, 동아리 공연, 다함께 준비운동이 열리는 무대입니다. 무대 옆 9·10번 천막은 공연 대기실이에요.', stage: true }
     ];
 
     // QR 코드 값: <앱 주소>#/q/<code>. 휴대폰 기본 카메라로 찍어도 앱이 열리며 도장이 찍힌다.
     const MISSIONS = [
-      { id: 1, title: '천원의 학식 서명 동참', where: '4번 부스 · 천원의 행복 홍보관', booths: [4], how: '서명 운동에 참여한 뒤 부스의 QR을 스캔하세요.', code: 'BJR-M1-K4H7', pin: '4127' },
-      { id: 2, title: '텀블러 지참 & 친환경 퀴즈', where: '7번 부스 · 꽃마리 & 비굳커피', booths: [7], how: '텀블러를 보여주거나 친환경 퀴즈를 풀고 QR을 스캔하세요.', code: 'BJR-M2-T7Q2', pin: '7358' },
-      { id: 3, title: '자원순환 나눔 체험', where: '8번 부스 · 아름다운가게 제주', booths: [8], how: '나눔 체험을 마치고 부스의 QR을 스캔하세요.', code: 'BJR-M3-R8N5', pin: '8264' },
-      { id: 4, title: '청년 건강 & 기후행동', where: '9·10번 부스 · 바이탈 또는 바람', booths: [9, 10], how: '건강 체크나 기후 퀴즈 중 하나에 참여하고 QR을 스캔하세요.', code: 'BJR-M4-V9C3', pin: '9105' },
-      { id: 5, title: '메달접기 또는 다회용기 반납', where: '5·6번 부스 · 메달접기 & 반납존', booths: [5, 6], how: '배번표 메달을 접거나 다회용기를 반납하고 QR을 스캔하세요.', code: 'BJR-M5-G5W8', pin: '5693' }
+      { id: 1, title: '소원나무에 바람 적기', where: '5번 부스 · 천원의 행복', booths: [5], how: '소원나무에 바람을 적고 부스의 QR을 스캔하세요.', code: 'BJR-M1-K4H7', pin: '4127' },
+      { id: 2, title: '텀블러 할인매장 알아보기', where: '4번 부스 · 텀블러 할인매장 지원사업', booths: [4], how: '텀블러 할인 가게 안내를 듣고 부스의 QR을 스캔하세요.', code: 'BJR-M2-T7Q2', pin: '7358' },
+      { id: 3, title: '페이스 페인팅 또는 양말목 만들기', where: '6번 부스 · 밥 아저씨 & 한라대 총학', booths: [6], how: '두 체험 중 하나에 참여하고 부스의 QR을 스캔하세요.', code: 'BJR-M3-R8N5', pin: '8264' },
+      { id: 4, title: '건강 체크 또는 유학생 교류', where: '7번 부스 · 바이탈 & 유학생', booths: [7], how: '건강 체크나 유학생 부스에 참여하고 QR을 스캔하세요.', code: 'BJR-M4-V9C3', pin: '9105' },
+      { id: 5, title: '바람 기후행동 참여', where: '8번 부스 · 바람', booths: [8], how: '바람 부스 활동에 참여하고 QR을 스캔하세요.', code: 'BJR-M5-G5W8', pin: '5693' }
     ];
-    const CLAIM = { code: 'BJR-CLAIM-X2P9', pin: '0203' }; // 본부(2번 부스) 리워드 교환용
+    const CLAIM = { code: 'BJR-CLAIM-X2P9', pin: '0203' }; // 본부(1번 천막) 리워드 교환용
 
     const QUOTES = [
       '도장을 모아 결승선으로! 🐢',
@@ -991,7 +989,7 @@
     const grid = $('#boothGrid');
     grid.innerHTML = BOOTHS.map(b => `
       <button class="booth${b.stage ? ' stage' : ''}" data-cat="${b.cat}" data-booth="${b.n}">
-        <span class="num ${b.tone}">${b.n}</span>
+        <span class="num ${b.tone}">${b.tag || b.n}</span>
         ${b.mission ? `<span class="booth-stamp" data-mission-tag="${b.mission}">🐢 도장</span>` : ''}
         <span class="booth-name">${b.name}</span>
         <span class="booth-desc">${b.short}</span>
@@ -1013,10 +1011,10 @@
       const b = BOOTHS.find(x => x.n === n);
       if (!b) return;
       $$('.booth', grid).forEach(el => el.classList.toggle('selected', +el.dataset.booth === n));
-      $('#sheetNum').textContent = b.n;
+      $('#sheetNum').textContent = b.tag || b.n;
       $('#sheetNum').className = 'num ' + b.tone;
       $('#sheetTitle').textContent = `${b.n}번 부스 · ${b.name}`;
-      if (b.stage) $('#sheetTitle').textContent = b.name;
+      if (b.tag) $('#sheetTitle').textContent = b.name;
       $('#sheetCat').textContent = b.label;
       $('#sheetDesc').textContent = b.desc;
       const m = b.mission && MISSIONS.find(x => x.id === b.mission);
@@ -1105,7 +1103,7 @@
       $('#homeCount').textContent = c;
       $('#tileBadge').textContent = `${c}/5`;
       $$('#homeDots i').forEach((d, i) => d.classList.toggle('on', i < c));
-      $('#homeStampDesc').textContent = c === 5 ? (state.claimedAt ? '완주 리워드 교환 완료!' : '완주! 본부(2번 부스)에서 리워드를 받으세요') : c === 0 ? '미션 부스 QR을 스캔해 도장을 모아보세요' : `${5 - c}개만 더 모으면 완주!`;
+      $('#homeStampDesc').textContent = c === 5 ? (state.claimedAt ? '완주 리워드 교환 완료!' : '완주! 본부(1번 천막)에서 리워드를 받으세요') : c === 0 ? '미션 부스 QR을 스캔해 도장을 모아보세요' : `${5 - c}개만 더 모으면 완주!`;
 
       // 거북이 위치: 출발(4px) ~ 깃발 앞(100% - 72px)
       const runner = $('#runner'), bubble = $('#bubble');
@@ -1119,7 +1117,7 @@
       $('#goalTitle').textContent = state.claimedAt ? '✅ 완주 리워드 교환 완료' : '🎉 거북이가 결승선에 도착했어요!';
       $('#goalDesc').innerHTML = state.claimedAt
         ? '5개 미션을 모두 완료하고 리워드를 받았어요.<br>함께 걸어줘서 고마워요!'
-        : '5개 미션을 모두 완료했습니다.<br><strong>본부(2번 부스)</strong>에 이 화면을 보여주면<br><strong>‘1구 키캡 키링 & 럭키드로우 응모권’</strong>을 드려요.';
+        : '5개 미션을 모두 완료했습니다.<br><strong>본부(1번 천막)</strong>에 이 화면을 보여주면<br><strong>‘1구 키캡 키링 & 럭키드로우 응모권’</strong>을 드려요.';
       $('#claimNote').textContent = state.claimedAt ? `${hhmm(state.claimedAt)}에 교환했어요. 폐회식 럭키드로우를 기대해주세요!` : '본부 스태프에게 교환 QR 스캔을 요청하세요';
     }
 
@@ -1161,7 +1159,7 @@
       renderStamps(m.id);
       vibrate([30, 40, 60]);
       if (c === 5) {
-        showResult({ kind: 'ok', emoji: '🏁', stampText: '완주', title: '5개 모두 완료! 결승선 도착!', desc: '본부(2번 부스)에 도장판 화면을 보여주고\n1구 키캡 키링 & 럭키드로우 응모권을 받으세요.', again: false });
+        showResult({ kind: 'ok', emoji: '🏁', stampText: '완주', title: '5개 모두 완료! 결승선 도착!', desc: '본부(1번 천막)에 도장판 화면을 보여주고\n1구 키캡 키링 & 럭키드로우 응모권을 받으세요.', again: false });
         confetti();
       } else {
         showResult({ kind: 'ok', emoji: '🐢', stampText: `미션 ${m.id}`, title: '도장 쾅!', desc: `${m.title}\n${QUOTES[c]} (${c}/5)`, again: true });
