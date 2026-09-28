@@ -313,6 +313,7 @@
       padding: 14px; border-radius: 12px; font-size: 14.5px; font-weight: 800;
       background: var(--primary); color: #fff;
     }
+    a.btn { text-decoration: none; }
     .btn:active { transform: scale(.98); }
     .btn.eco { background: var(--eco); }
     .btn.ghost { background: #f1f5f9; color: var(--text); }
@@ -455,6 +456,10 @@
     .quiz-opt.right { border-color: var(--eco); background: var(--eco-light); color: var(--eco-dark); }
     .quiz-opt.wrong { border-color: #fca5a5; background: #fef2f2; color: #b91c1c; opacity: .7; animation: shake .3s; }
     @keyframes shake { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+    .survey-step { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; padding-top: 12px; border-top: 1px dashed var(--line); }
+    .survey-step label { font-size: 12.5px; font-weight: 700; color: var(--muted); margin-top: 4px; }
+    .survey-step .pin-row input { background: #fff; color: var(--ink); border-color: var(--line); }
+    .survey-step .pin-row .btn { background: var(--primary); }
     .quiz-feedback { min-height: 20px; margin: 12px 0 10px; font-size: 13px; font-weight: 700; }
     .quiz-feedback.ok { color: var(--eco-dark); }
     .quiz-feedback.no { color: #b91c1c; }
@@ -989,11 +994,17 @@
       { id: 'q4', type: 'quiz', title: '코스 퀴즈 ④ 완주 메달', where: '걷기 코스 QR ④', code: 'BJR-Q4-M5T3', pin: '4583',
         q: '부지런의 완주 메달은 무엇으로 만들까요?', options: ['재활용 금속', '내가 달고 걸은 배번표', '플라스틱 병뚜껑'], answer: 1,
         explain: '배번표를 접어 종이 메달로 업사이클링해요.' },
-      { id: 'q5', type: 'quiz', title: '코스 퀴즈 ⑤ 천원의 학식', where: '걷기 코스 QR ⑤', code: 'BJR-Q5-W7N4', pin: '5217',
+      { id: 'q5', type: 'quiz', survey: true, title: '코스 퀴즈 ⑤ 천원의 학식', where: '걷기 코스 QR ⑤', code: 'BJR-Q5-W7N4', pin: '5217',
         q: '‘천원의 학식’ 서명에 함께한 대학생은 약 몇 명일까요?', options: ['약 190명', '약 1,900명', '약 19,000명'], answer: 1,
         explain: '약 1,900명의 대학생이 서명으로 연대했어요.' }
     ];
     const GOAL = 5;
+    // 천원의 학식 설문(구글 폼). survey: true 인 퀴즈는 정답 뒤 설문을 하고 완료 코드를 입력해야 도장을 준다.
+    // 구글 폼은 제출 여부를 앱에 알려주지 않으므로, 폼의 '확인 메시지'에 SURVEY_CODE 를 적어두고
+    // 제출한 사람만 그 코드를 보게 한다. 코드를 바꾸면 구글 폼 확인 메시지도 같이 바꿀 것.
+    // SURVEY_URL 을 비우면 설문 단계 없이 정답만으로 도장을 준다.
+    const SURVEY_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScWTIvMJtfCzVtiLkfJY6yirbNrj6cK9UKMGzdJhiqzzHTC_w/viewform';
+    const SURVEY_CODE = '4827';
     const CLAIM = { code: 'BJR-CLAIM-X2P9', pin: '0203' }; // 본부(1번 천막) 리워드 교환용
 
     const QUOTES = [
@@ -1326,6 +1337,48 @@
       $('#quizFeedback').className = 'quiz-feedback';
       $('#quizOptions').innerHTML = m.options.map((o, i) => `<button class="quiz-opt" data-i="${i}"><b>${'①②③④'[i]}</b>${o}</button>`).join('');
       openScrim($('#quizModal'));
+      // 이미 정답을 맞히고 설문만 남은 경우 바로 설문 단계로
+      if (m.survey && SURVEY_URL && state.passed && state.passed[m.id]) {
+        const right = $(`.quiz-opt[data-i="${m.answer}"]`, $('#quizOptions'));
+        right.classList.add('right');
+        $$('.quiz-opt', $('#quizOptions')).forEach(b => b.disabled = true);
+        showSurveyStep(m, true);
+      }
+    }
+
+    // 설문 단계: 설문을 제출하면 구글 폼 확인 메시지에 나오는 완료 코드를 입력해야 도장을 준다
+    function showSurveyStep(m, resumed) {
+      $('#quizFeedback').className = 'quiz-feedback ok';
+      $('#quizFeedback').textContent = resumed
+        ? '설문을 마쳤다면 완료 코드를 입력해주세요.'
+        : '정답! ' + m.explain + ' 이제 짧은 설문에 참여하고, 제출 후 나오는 완료 코드를 입력하면 도장을 드려요.';
+      const box = document.createElement('div');
+      box.className = 'survey-step';
+      box.innerHTML = `
+        <a class="btn eco" href="${SURVEY_URL}" target="_blank" rel="noopener">📝 설문하러 가기</a>
+        <label for="surveyCode">설문 제출 후 나오는 완료 코드</label>
+        <div class="pin-row">
+          <input id="surveyCode" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" placeholder="0000">
+          <button class="btn" id="surveySubmit">확인</button>
+        </div>`;
+      $('#quizOptions').appendChild(box);
+      const input = $('#surveyCode', box);
+      input.addEventListener('input', () => { input.value = input.value.replace(/\D/g, '').slice(0, 4); });
+      const submit = () => {
+        if (input.value === SURVEY_CODE) {
+          delete state.passed[m.id];
+          closeQuiz();
+          grantStamp(m);
+        } else {
+          $('#quizFeedback').className = 'quiz-feedback no';
+          $('#quizFeedback').textContent = input.value.length < 4
+            ? '완료 코드 4자리를 입력해주세요.'
+            : '완료 코드가 맞지 않아요. 설문 제출 후 화면에 나온 코드를 확인해주세요.';
+          vibrate([40, 40, 40]);
+        }
+      };
+      $('#surveySubmit', box).addEventListener('click', submit);
+      input.addEventListener('keydown', e => { if (e.key === 'Enter') submit(); });
     }
     function closeQuiz() { closeScrim($('#quizModal')); quizMission = null; }
     $('#quizOptions').addEventListener('click', e => {
@@ -1338,7 +1391,15 @@
         $('#quizFeedback').textContent = '정답! ' + m.explain;
         $('#quizFeedback').className = 'quiz-feedback ok';
         vibrate(30);
-        setTimeout(() => { closeQuiz(); grantStamp(m); }, 1100);
+        if (m.survey && SURVEY_URL) {
+          // 정답은 기억해 두고(설문 다녀와서 다시 문제를 풀지 않도록) 설문 단계로
+          state.passed = state.passed || {};
+          state.passed[m.id] = true;
+          save();
+          showSurveyStep(m, false);
+        } else {
+          setTimeout(() => { closeQuiz(); grantStamp(m); }, 1100);
+        }
       } else {
         btn.classList.add('wrong');
         btn.disabled = true;
