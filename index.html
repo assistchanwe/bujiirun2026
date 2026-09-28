@@ -230,6 +230,9 @@
       border: 1px solid var(--line); background: #fff; color: var(--muted); white-space: nowrap;
     }
     .chip.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .map-img { position: relative; display: block; border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--line); box-shadow: var(--shadow-sm); }
+    .map-img img { display: block; width: 100%; height: auto; }
+    .map-img span { position: absolute; right: 8px; bottom: 8px; font-size: 11px; font-weight: 800; color: #fff; background: rgb(15 23 42 / .7); padding: 4px 9px; border-radius: 999px; text-decoration: none; }
     .ground {
       background: #f1f5f9; border: 2px dashed #cbd5e1; border-radius: var(--radius-md);
       padding: 14px 12px; display: flex; flex-direction: column; gap: 10px;
@@ -615,7 +618,7 @@
               <span class="mt-icon">🎪</span><span class="mt-title">부스 배치도</span><span class="mt-desc">천막 11동 & 메인 무대</span>
             </button>
             <button class="menu-tile" data-go="timetable">
-              <span class="mt-icon">⏱️</span><span class="mt-title">타임테이블</span><span class="mt-desc">13:00 등록부터 20:00 클린업까지</span>
+              <span class="mt-icon">⏱️</span><span class="mt-title">타임테이블</span><span class="mt-desc">14:00 부스 시작부터 18:30 폐회식까지</span>
             </button>
             <button class="menu-tile eco" data-go="stamp">
               <span class="mt-badge" id="tileBadge">0/5</span>
@@ -679,7 +682,11 @@
       <!-- ============ 부스 배치도 ============ -->
       <section class="screen" data-screen="booths" data-title="부스 배치도">
         <div class="stack">
-          <p class="screen-lead">용담레포츠공원 A구역 천막과 잔디운동장 메인 무대입니다. 부스를 누르면 자세한 안내가 열려요.</p>
+          <a class="map-img" href="booth-map.webp" target="_blank" rel="noopener" aria-label="부스 배치도 크게 보기">
+            <img src="booth-map.webp" width="2000" height="1500" alt="용담레포츠공원 부지런 부스 배치도: 주차장, 참가자 등록, 본부, 텀블러 할인매장 지원사업, 물품보관, 부스 5~8, 포토존, 화장실, 관객석, 무대" loading="eager">
+            <span>눌러서 크게 보기 ↗</span>
+          </a>
+          <p class="screen-lead">부스를 누르면 자세한 안내가 열려요.</p>
           <div class="chip-row" id="boothFilter" role="tablist">
             <button class="chip active" data-cat="all">전체 부스 (12)</button>
             <button class="chip" data-cat="operation">운영·안내</button>
