@@ -255,9 +255,16 @@
       background: rgb(255 255 255 / .15); color: #fff; font-size: 22px; font-weight: 700;
     }
     .map-view-close:active { background: rgb(255 255 255 / .3); }
-    .map-view-scroll { flex: 1; overflow: auto; -webkit-overflow-scrolling: touch; display: flex; align-items: center; }
-    .map-view-scroll img { display: block; width: 200%; max-width: none; height: auto; margin: auto; }
-    @media (min-width: 700px) { .map-view-scroll img { width: 100%; max-width: 1400px; } }
+    .map-view-scroll { flex: 1; position: relative; overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none; }
+    .map-view-scroll img {
+      position: absolute; left: 0; top: 0; max-width: none; height: auto;
+      transform-origin: 0 0; will-change: transform; -webkit-user-drag: none;
+    }
+    .map-zoom-btns { position: absolute; right: 12px; bottom: 12px; display: flex; gap: 8px; }
+    .map-zoom-btns button {
+      width: 44px; height: 44px; border-radius: 50%; font-size: 24px; font-weight: 700; line-height: 1;
+      background: rgb(255 255 255 / .9); color: var(--ink); box-shadow: var(--shadow-md);
+    }
     .map-view-hint { text-align: center; font-size: 12px; color: #94a3b8; padding: 8px 16px calc(12px + var(--safe-b)); }
     .map-img { width: 100%; padding: 0; background: none; cursor: zoom-in; }
     .map-img { position: relative; display: block; border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--line); box-shadow: var(--shadow-sm); }
@@ -954,9 +961,13 @@
         <button class="map-view-close" id="mapClose" aria-label="닫기">✕</button>
       </div>
       <div class="map-view-scroll" id="mapScroll">
-        <img src="booth-map.webp" width="2000" height="1500" alt="용담레포츠공원 부지런 부스 배치도">
+        <img id="mapImg" src="booth-map.webp" width="2000" height="1500" alt="용담레포츠공원 부지런 부스 배치도" draggable="false">
+        <div class="map-zoom-btns">
+          <button id="mapZoomOut" aria-label="축소">−</button>
+          <button id="mapZoomIn" aria-label="확대">+</button>
+        </div>
       </div>
-      <p class="map-view-hint">손가락으로 밀어서 둘러보세요 · ✕ 또는 뒤로가기로 닫기</p>
+      <p class="map-view-hint">두 손가락으로 확대·축소 · 두 번 탭하면 확대 · ✕ 또는 뒤로가기로 닫기</p>
     </div>
 
     <!-- 코스 퀴즈 모달 -->
@@ -1166,6 +1177,97 @@
     }
     $('#sheetScan').addEventListener('click', () => go('scan'));
 
+    // 배치도 확대·축소: 처음엔 화면 너비에 맞추고, 두 손가락으로 확대(최대 5배), 확대 상태에선 한 손가락으로 이동
+    const MapZoom = (() => {
+      const box = $('#mapScroll'), img = $('#mapImg');
+      const RATIO = 1500 / 2000, MAX = 5;
+      let W = 0, H = 0, s = 1, tx = 0, ty = 0;
+      const pts = new Map();
+      let pinch = null, pan = null, lastTap = 0, lastTapX = 0, lastTapY = 0, moved = false;
+
+      function apply() { img.style.transform = `translate(${tx}px, ${ty}px) scale(${s})`; }
+      // 이미지가 화면보다 작으면 가운데, 크면 가장자리 밖으로 빈 곳이 안 보이게
+      function clamp() {
+        const cw = box.clientWidth, ch = box.clientHeight, iw = W * s, ih = H * s;
+        tx = iw <= cw ? (cw - iw) / 2 : Math.min(0, Math.max(cw - iw, tx));
+        ty = ih <= ch ? (ch - ih) / 2 : Math.min(0, Math.max(ch - ih, ty));
+      }
+      function reset() {
+        W = box.clientWidth; H = W * RATIO;
+        img.style.width = W + 'px';
+        s = 1; tx = 0; ty = 0; clamp(); apply();
+      }
+      // (px, py) 지점을 기준으로 배율을 ns 로
+      function zoomAt(ns, px, py) {
+        ns = Math.min(MAX, Math.max(1, ns));
+        tx = px - (px - tx) * (ns / s);
+        ty = py - (py - ty) * (ns / s);
+        s = ns; clamp(); apply();
+      }
+      const local = e => { const r = box.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
+      const two = () => { const [a, b] = [...pts.values()]; return { d: Math.hypot(a.x - b.x, a.y - b.y) || 1, x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }; };
+
+      box.addEventListener('pointerdown', e => {
+        if (e.target.closest('.map-zoom-btns')) return;
+        try { box.setPointerCapture(e.pointerId); } catch (err) {}
+        pts.set(e.pointerId, local(e));
+        moved = false;
+        if (pts.size === 2) {
+          const t = two();
+          pinch = { d: t.d, s, ix: (t.x - tx) / s, iy: (t.y - ty) / s };
+          pan = null;
+        } else if (pts.size === 1) {
+          const p = local(e);
+          pan = { x: p.x, y: p.y, tx, ty };
+        }
+      });
+      box.addEventListener('pointermove', e => {
+        if (!pts.has(e.pointerId)) return;
+        pts.set(e.pointerId, local(e));
+        if (pinch && pts.size >= 2) {
+          const t = two();
+          const ns = Math.min(MAX, Math.max(1, pinch.s * t.d / pinch.d));
+          s = ns; tx = t.x - pinch.ix * ns; ty = t.y - pinch.iy * ns;
+          clamp(); apply(); moved = true;
+        } else if (pan) {
+          const p = local(e);
+          if (Math.abs(p.x - pan.x) + Math.abs(p.y - pan.y) > 6) moved = true;
+          tx = pan.tx + (p.x - pan.x); ty = pan.ty + (p.y - pan.y);
+          clamp(); apply();
+        }
+      });
+      const end = e => {
+        if (!pts.has(e.pointerId)) return;
+        const p = pts.get(e.pointerId);
+        pts.delete(e.pointerId);
+        if (pts.size < 2) pinch = null;
+        if (pts.size === 1) { const q = [...pts.values()][0]; pan = { x: q.x, y: q.y, tx, ty }; }
+        if (pts.size === 0) {
+          pan = null;
+          // 두 번 탭: 확대 ↔ 원래 크기
+          if (!moved && e.type === 'pointerup') {
+            const now = Date.now();
+            if (now - lastTap < 320 && Math.hypot(p.x - lastTapX, p.y - lastTapY) < 30) {
+              s > 1.05 ? zoomAt(1, p.x, p.y) : zoomAt(2.5, p.x, p.y);
+              lastTap = 0;
+            } else { lastTap = now; lastTapX = p.x; lastTapY = p.y; }
+          }
+        }
+      };
+      box.addEventListener('pointerup', end);
+      box.addEventListener('pointercancel', end);
+      box.addEventListener('wheel', e => {
+        e.preventDefault();
+        const p = local(e);
+        zoomAt(s * (e.deltaY < 0 ? 1.15 : 1 / 1.15), p.x, p.y);
+      }, { passive: false });
+      const center = () => ({ x: box.clientWidth / 2, y: box.clientHeight / 2 });
+      $('#mapZoomIn').addEventListener('click', () => { const c = center(); zoomAt(s * 1.5, c.x, c.y); });
+      $('#mapZoomOut').addEventListener('click', () => { const c = center(); zoomAt(s / 1.5, c.x, c.y); });
+      window.addEventListener('resize', () => { if (mapView.classList.contains('open')) reset(); });
+      return { reset };
+    })();
+
     // 배치도 크게 보기: 앱 안 전체화면으로 열고, ✕ · Esc · 휴대폰 뒤로가기로 닫는다
     const mapView = $('#mapView');
     function openMap() {
@@ -1173,8 +1275,7 @@
       mapView.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
       history.pushState({ mapView: true }, '', location.href);
-      const sc = $('#mapScroll');
-      requestAnimationFrame(() => { sc.scrollLeft = (sc.scrollWidth - sc.clientWidth) / 2; });
+      requestAnimationFrame(() => MapZoom.reset());
       $('#mapClose').focus();
     }
     function closeMap(fromPop) {
