@@ -72,6 +72,15 @@
       -webkit-backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--line);
     }
+    .inapp-banner {
+      display: flex; gap: 10px; align-items: center;
+      background: #fffbeb; border-bottom: 1px solid #fcd34d; padding: 10px 14px;
+    }
+    .inapp-banner[hidden] { display: none; }
+    .ib-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; font-size: 12px; color: #78350f; line-height: 1.45; }
+    .ib-text b { font-size: 13px; color: #92400e; }
+    .ib-how { margin-top: 4px; font-weight: 700; color: #b45309; }
+    .ib-btn { flex-shrink: 0; font-size: 12px; font-weight: 800; color: #fff; background: #d97706; padding: 9px 11px; border-radius: 10px; }
     .topbar-back {
       width: 40px; height: 40px; border-radius: 12px;
       display: none; align-items: center; justify-content: center;
@@ -608,6 +617,16 @@
       </a>
     </header>
 
+    <!-- 카카오톡·인스타 등 인앱 브라우저에서 열었을 때 안내 -->
+    <div class="inapp-banner" id="inappBanner" hidden>
+      <div class="ib-text">
+        <b>⚠️ 앱 안 브라우저에서 열려 있어요</b>
+        <span>여기서 모은 도장은 크롬·사파리와 따로 저장돼요. 도장을 모으기 전에 기본 브라우저로 열어주세요.</span>
+        <span class="ib-how" id="inappHow" hidden></span>
+      </div>
+      <button class="ib-btn" id="inappOpen">기본 브라우저로 열기</button>
+    </div>
+
     <main>
       <!-- ============ 홈 ============ -->
       <section class="screen" data-screen="home" data-title="홈">
@@ -844,7 +863,7 @@
           <b>카메라가 안 켜지나요?</b><br>
           · 카카오톡·인스타 앱 안에서 열었다면 오른쪽 위 메뉴에서 <b>다른 브라우저로 열기</b>를 눌러주세요.<br>
           · 카메라 권한을 거절했다면 브라우저 주소창의 설정에서 카메라를 허용해주세요.<br>
-          · 휴대폰 기본 카메라로 QR을 찍어도 도장이 찍혀요.
+          · 휴대폰 기본 카메라로 찍으면 다른 브라우저에서 열려 <b>도장이 따로 쌓일 수 있어요.</b> 가능하면 이 화면의 스캐너로 찍어주세요.
         </p>
       </section>
 
@@ -1077,6 +1096,8 @@
         history.replaceState(null, '', '#/stamp');
         render();
         setTimeout(() => handleCode(arg), 150);
+        // 기본 카메라로 찍으면 브라우저가 달라져 도장이 나뉠 수 있으니 앱 스캐너를 권한다
+        setTimeout(() => toast('다음부터는 아래 가운데 [QR 스캔] 버튼으로 찍어주세요. 도장이 한곳에 모여요!'), 2600);
         return;
       }
       if (current === 'scan' && route !== 'scan') Scanner.stop();
@@ -1651,6 +1672,31 @@
         if (alive) requestAnimationFrame(frame); else c.clearRect(0, 0, innerWidth, innerHeight);
       })();
     }
+
+    /* ================== 인앱 브라우저 안내 ================== */
+    // 카톡·인스타 등 앱 안 브라우저는 크롬·사파리와 저장 공간이 달라 도장이 나뉜다.
+    (() => {
+      const ua = navigator.userAgent;
+      const kakao = /KAKAOTALK/i.test(ua);
+      const inapp = kakao || /Instagram|FBAN|FBAV|FB_IAB|NAVER\(inapp|Line\/|DaumApps|everytimeApp|; wv\)/i.test(ua);
+      if (!inapp) return;
+      const android = /Android/i.test(ua);
+      $('#inappBanner').hidden = false;
+      const url = location.href.replace(/#.*$/, '') + '#/home';
+      $('#inappOpen').addEventListener('click', () => {
+        if (kakao) {
+          location.href = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(url);
+        } else if (android) {
+          location.href = 'intent://' + url.replace(/^https?:\/\//, '') + '#Intent;scheme=https;package=com.android.chrome;end';
+        }
+        // 자동으로 못 여는 경우(아이폰 인스타 등)를 대비해 방법도 보여준다
+        const how = $('#inappHow');
+        how.hidden = false;
+        how.textContent = android
+          ? '열리지 않으면 오른쪽 위 ⋮ 메뉴 → ‘다른 브라우저로 열기’를 눌러주세요.'
+          : '열리지 않으면 오른쪽 위 ⋯ 메뉴 → ‘외부 브라우저에서 열기’ 또는 ‘Safari로 열기’를 눌러주세요.';
+      });
+    })();
 
     /* ================== 시작 ================== */
     renderStamps();
