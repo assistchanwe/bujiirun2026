@@ -230,6 +230,27 @@
       border: 1px solid var(--line); background: #fff; color: var(--muted); white-space: nowrap;
     }
     .chip.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .map-view {
+      position: fixed; inset: 0; z-index: 90; background: #0b1220;
+      display: none; flex-direction: column;
+    }
+    .map-view.open { display: flex; }
+    .map-view-bar {
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+      padding: calc(10px + env(safe-area-inset-top, 0px)) 12px 10px 16px; color: #fff;
+    }
+    .map-view-bar h3 { font-size: 15px; font-weight: 800; }
+    .map-view-close {
+      width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: rgb(255 255 255 / .15); color: #fff; font-size: 22px; font-weight: 700;
+    }
+    .map-view-close:active { background: rgb(255 255 255 / .3); }
+    .map-view-scroll { flex: 1; overflow: auto; -webkit-overflow-scrolling: touch; display: flex; align-items: center; }
+    .map-view-scroll img { display: block; width: 200%; max-width: none; height: auto; margin: auto; }
+    @media (min-width: 700px) { .map-view-scroll img { width: 100%; max-width: 1400px; } }
+    .map-view-hint { text-align: center; font-size: 12px; color: #94a3b8; padding: 8px 16px calc(12px + var(--safe-b)); }
+    .map-img { width: 100%; padding: 0; background: none; cursor: zoom-in; }
     .map-img { position: relative; display: block; border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--line); box-shadow: var(--shadow-sm); }
     .map-img img { display: block; width: 100%; height: auto; }
     .map-img span { position: absolute; right: 8px; bottom: 8px; font-size: 11px; font-weight: 800; color: #fff; background: rgb(15 23 42 / .7); padding: 4px 9px; border-radius: 999px; text-decoration: none; }
@@ -717,10 +738,10 @@
       <!-- ============ 부스 배치도 ============ -->
       <section class="screen" data-screen="booths" data-title="부스 배치도">
         <div class="stack">
-          <a class="map-img" href="booth-map.webp" target="_blank" rel="noopener" aria-label="부스 배치도 크게 보기">
+          <button class="map-img" id="mapOpen" aria-label="부스 배치도 크게 보기">
             <img src="booth-map.webp" width="2000" height="1500" alt="용담레포츠공원 부지런 부스 배치도: 주차장, 참가자 등록, 본부, 텀블러 할인매장 지원사업, 물품보관, 부스 5~8, 포토존, 화장실, 관객석, 무대" loading="eager">
-            <span>눌러서 크게 보기 ↗</span>
-          </a>
+            <span>눌러서 크게 보기 🔍</span>
+          </button>
           <p class="screen-lead">부스를 누르면 자세한 안내가 열려요.</p>
           <div class="chip-row" id="boothFilter" role="tablist">
             <button class="chip active" data-cat="all">전체</button>
@@ -900,6 +921,18 @@
           <button class="btn eco" id="resultGo">도장판 보기</button>
         </div>
       </div>
+    </div>
+
+    <!-- 부스 배치도 크게 보기 -->
+    <div class="map-view" id="mapView" role="dialog" aria-modal="true" aria-labelledby="mapViewTitle" aria-hidden="true">
+      <div class="map-view-bar">
+        <h3 id="mapViewTitle">부스 배치도</h3>
+        <button class="map-view-close" id="mapClose" aria-label="닫기">✕</button>
+      </div>
+      <div class="map-view-scroll" id="mapScroll">
+        <img src="booth-map.webp" width="2000" height="1500" alt="용담레포츠공원 부지런 부스 배치도">
+      </div>
+      <p class="map-view-hint">손가락으로 밀어서 둘러보세요 · ✕ 또는 뒤로가기로 닫기</p>
     </div>
 
     <!-- 코스 퀴즈 모달 -->
@@ -1101,11 +1134,34 @@
     }
     $('#sheetScan').addEventListener('click', () => go('scan'));
 
+    // 배치도 크게 보기: 앱 안 전체화면으로 열고, ✕ · Esc · 휴대폰 뒤로가기로 닫는다
+    const mapView = $('#mapView');
+    function openMap() {
+      mapView.classList.add('open');
+      mapView.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      history.pushState({ mapView: true }, '', location.href);
+      const sc = $('#mapScroll');
+      requestAnimationFrame(() => { sc.scrollLeft = (sc.scrollWidth - sc.clientWidth) / 2; });
+      $('#mapClose').focus();
+    }
+    function closeMap(fromPop) {
+      if (!mapView.classList.contains('open')) return;
+      mapView.classList.remove('open');
+      mapView.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      if (!fromPop && history.state && history.state.mapView) history.back();
+      $('#mapOpen').focus();
+    }
+    $('#mapOpen').addEventListener('click', openMap);
+    $('#mapClose').addEventListener('click', () => closeMap(false));
+    window.addEventListener('popstate', () => closeMap(true));
+
     function openScrim(el) { el.classList.add('open'); el.setAttribute('aria-hidden', 'false'); }
     function closeScrim(el) { el.classList.remove('open'); el.setAttribute('aria-hidden', 'true'); }
     function closeSheet() { closeScrim($('#boothSheet')); $$('.booth', grid).forEach(el => el.classList.remove('selected')); }
     $('#boothSheet').addEventListener('click', e => { if (e.target.id === 'boothSheet' || e.target.closest('[data-close]')) closeSheet(); });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeSheet(); closeModal(); closeQuiz(); } });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeMap(false); closeSheet(); closeModal(); closeQuiz(); } });
 
     /* ================== 타임테이블 ================== */
     const tl = $('#timeline');
