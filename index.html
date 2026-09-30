@@ -324,6 +324,7 @@
     .sheet-mission { margin-top: 14px; background: var(--eco-light); border: 1px solid #a7f3d0; border-radius: var(--radius-sm); padding: 12px; }
     .sheet-mission h5 { font-size: 13px; font-weight: 800; color: var(--eco-dark); margin-bottom: 3px; }
     .sheet-mission p { font-size: 12.5px; color: #334155; }
+    .sheet-mission p + h5 { margin-top: 10px; }
     .btn {
       display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
       padding: 14px; border-radius: 12px; font-size: 14.5px; font-weight: 800;
@@ -687,7 +688,7 @@
           <button class="progress-card" data-go="stamp">
             <div class="pc-text">
               <div class="pc-title">🐢 거북이 도장판 <b id="homeCount">0</b> / 5</div>
-              <div class="pc-desc" id="homeStampDesc">코스 퀴즈·부스 미션 QR로 도장을 모아보세요</div>
+              <div class="pc-desc" id="homeStampDesc">코스 프로그램·부스 미션 QR로 도장을 모아보세요</div>
               <div class="pc-dots" id="homeDots"><i></i><i></i><i></i><i></i><i></i></div>
             </div>
             <span class="pc-go">이어서 →</span>
@@ -696,7 +697,7 @@
           <div class="menu-grid">
             <button class="menu-tile wide" data-go="scan">
               <span class="mt-icon"><svg width="24" height="24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><use href="#i-qr"/></svg></span>
-              <span><span class="mt-title">QR 스캔하고 도장 받기</span><br><span class="mt-desc">걷기 코스 퀴즈 QR과 부스 미션 QR을 비춰주세요</span></span>
+              <span><span class="mt-title">QR 스캔하고 도장 받기</span><br><span class="mt-desc">코스 프로그램 QR과 부스 미션 QR을 비춰주세요</span></span>
             </button>
             <button class="menu-tile" data-go="info">
               <span class="mt-icon">🌱</span><span class="mt-title">행사·다회용기 안내</span><span class="mt-desc">일정, 취지, 쓰레기 없는 행사 수칙</span>
@@ -709,7 +710,7 @@
             </button>
             <button class="menu-tile eco" data-go="stamp">
               <span class="mt-badge" id="tileBadge">0/5</span>
-              <span class="mt-icon">🐢</span><span class="mt-title">거북이 도장판</span><span class="mt-desc">10곳 중 5개 모으면 키링 무료!</span>
+              <span class="mt-icon">🐢</span><span class="mt-title">거북이 도장판</span><span class="mt-desc">도장 5개 모으면 키링 무료!</span>
             </button>
             <button class="menu-tile org" data-go="partners" style="grid-column:1/-1; min-height:0; flex-direction:row; align-items:center; gap:12px;">
               <span class="mt-icon">🤝</span>
@@ -808,7 +809,7 @@
         <div class="stack">
           <div class="card race">
             <div class="race-head">
-              <div class="race-count">도장 <b id="stampCount">0</b> / 5개 <span class="race-sub">(10곳 중 아무 5곳)</span></div>
+              <div class="race-count">도장 <b id="stampCount">0</b> / 5개 <span class="race-sub" id="raceSub"></span></div>
               <button class="link-btn" id="resetBtn">초기화</button>
             </div>
             <div class="track" id="track">
@@ -833,8 +834,8 @@
           <div class="h-sub">📒 내 도장 기록 · 받은 순서대로</div>
           <div class="board" id="board"></div>
 
-          <div class="h-sub">🚶 걷기 코스 퀴즈 · QR 찍고 문제 맞히기</div>
-          <div class="mission-list" id="quizList"></div>
+          <div class="h-sub">🚶 걷기 코스 프로그램 · 코스에서 QR 찾기</div>
+          <div class="mission-list" id="courseList"></div>
           <div class="h-sub">🎪 부스 미션 · 체험하고 QR 찍기</div>
           <div class="mission-list" id="boothList"></div>
         </div>
@@ -888,10 +889,10 @@
           <div class="org"><div class="org-logo">🌸</div><div><h5>꽃마리 협동조합</h5><p><strong>리필 스테이션</strong> · 텀블러 지원사업, 친환경 세제·비누 리필</p></div></div>
           <div class="org"><div class="org-logo">☕</div><div><h5>비굳커피</h5><p><strong>텀블러 동참 카페</strong> · 텀블러 할인 캠페인</p></div></div>
           <div class="org"><div class="org-logo">🌏</div><div><h5>지구별가게</h5><p><strong>제로웨이스트 샵</strong> · 라이프스타일 굿즈, 참가자 손수건 협찬</p></div></div>
-          <div class="org"><div class="org-logo">🎁</div><div><h5>아름다운가게 제주 (동문점 / 노형점)</h5><p><strong>자원순환 나눔</strong> · 나눔 부스 운영 및 기부 연계</p></div></div>
-          <div class="org"><div class="org-logo">♻️</div><div><h5>리턴잇 & 노플라스틱선데이</h5><p><strong>다회용기 & 업사이클링</strong> · 다회용기 대여·세척 공급, 업사이클링 키캡 키링</p></div></div>
+          <div class="org"><div class="org-logo">♻️</div><div><h5>제주도청 자원순환과</h5><p><strong>다회용기 지원사업</strong></p></div></div>
           <div class="org"><div class="org-logo">👟</div><div><h5>무해런</h5><p><strong>멘토링</strong> · 쓰레기 없는 마라톤 기획·운영 노하우</p></div></div>
-          <div class="org"><div class="org-logo">🎓</div><div><h5>제주대학교 동아리연합회 & 제주한라대학교 총학생회</h5><p><strong>학생 자치 연대</strong> · 도내 대학 자치 협력</p></div></div>
+          <div class="org"><div class="org-logo">🎓</div><div><h5>제주한라대학교 제41대 다온 총학생회</h5><p><strong>학생 자치 연대</strong> · 도내 대학 자치 협력</p></div></div>
+          <div class="org"><div class="org-logo">🎓</div><div><h5>제주대학교 제41대 지금 동아리연합회</h5><p><strong>학생 자치 연대</strong> · 도내 대학 자치 협력</p></div></div>
 
           <footer class="footer">
             <p><strong>2026 제주 대학생 걷기대회 ‘부지런’ 기획단</strong></p>
@@ -994,39 +995,38 @@
       { n: 1, name: '본부', short: '상황실 · 의료 · 리워드 교환', cat: 'operation', tone: '', label: '운영·안내', desc: '행사 총괄 본부입니다. 구급상자, 미아보호, 긴급상황 지원을 맡고 있어요. 도장 5개를 모으면 여기서 키링을 받아요.' },
       { n: 2, name: '참가자 등록 부스', short: '티셔츠·배번표 수령', cat: 'operation', tone: '', label: '운영·안내', desc: '참가자 본인 확인 후 티셔츠·배번표·스트링백을 나눠드립니다. 현장 접수도 이곳에서 해요.' },
       { n: 3, name: '물품보관 & 식수대', short: '비닐 없는 짐보관 · 물 채우기', cat: 'operation', tone: '', label: '운영·안내', desc: '비닐봉투 대신 개인 가방이나 기부받은 종이 쇼핑백에 짐을 보관합니다. 식수대에서 텀블러에 물을 채울 수 있어요.' },
-      { n: 4, name: '텀블러 할인매장 지원사업', short: '텀블러 할인 가게 안내', cat: 'booth', tone: 'eco', label: '친환경', desc: '텀블러를 가져가면 할인해주는 제주의 가게들과 텀블러 할인매장 지원사업을 소개합니다.', mission: 'b2' },
-      { n: 5, name: '천원의 행복 & 동아리 소개', short: '소원나무 · 참여 동아리 소개', cat: 'booth', tone: 'org', label: '대학생·동아리', desc: '‘천원의 행복’ 부스에서 소원나무에 바람을 적고, 부지런에 함께한 동아리들을 만나보세요.', mission: 'b1' },
-      { n: 6, name: '부지런한 밥 아저씨 & 한라대 총학', short: '페이스 페인팅 · 양말목 만들기', cat: 'booth', tone: 'org', label: '체험', desc: '부지런한 밥 아저씨의 페이스 페인팅, 한라대 총학생회의 양말목 공예 체험이 열려요.', mission: 'b3' },
-      { n: 7, name: '바이탈 & 유학생 부스', short: '건강 체크 · 유학생 문화 교류', cat: 'booth', tone: 'org', label: '대학생·동아리', desc: '제주대 간호·보건 동아리 바이탈의 건강 체크와 스트레칭 안내, 유학생들과의 문화 교류 부스입니다.', mission: 'b4' },
-      { n: 8, name: '바람 부스 & 식수대', short: '환경동아리 바람 · 물 채우기', cat: 'booth', tone: 'eco', label: '친환경', desc: '환경동아리 바람의 기후행동 부스입니다. 옆 식수대에서 텀블러에 물을 채울 수 있어요.', mission: 'b5' },
+      { n: 4, name: '텀블러 할인매장 지원사업', short: '할인매장 지도 구독 · 음료', cat: 'booth', tone: 'eco', label: '친환경', desc: '텀블러를 가져가면 할인해주는 제주의 가게들과 텀블러 할인매장 지원사업을 소개합니다. 할인매장 지도를 구독하면 음료도 받을 수 있어요!', missions: ['b2'] },
+      { n: 5, name: '천원의 행복 & 동아리 소개', short: '소원나무 · 참여 동아리 소개', cat: 'booth', tone: 'org', label: '대학생·동아리', desc: '‘천원의 행복’ 부스에서 소원나무에 바람을 적고, 부지런에 함께한 동아리들을 만나보세요.', missions: ['b1'] },
+      { n: 6, name: '부지런한 밥 아저씨 & 한라대 총학', short: '페이스 페인팅 · 양말목 키링', cat: 'booth', tone: 'org', label: '체험', desc: '부지런한 밥 아저씨의 페이스 페인팅, 한라대 총학생회의 양말목 키링 만들기 체험이 열려요.', missions: ['b3', 'b4'] },
+      { n: 7, name: '바이탈 & 유학생 부스', short: '건강 체크 · 유학생 문화 교류', cat: 'booth', tone: 'org', label: '대학생·동아리', desc: '제주대 간호·보건 동아리 바이탈의 건강 체크와 스트레칭 안내, 유학생들과의 문화 교류 부스입니다.', missions: ['b5', 'b6'] },
+      { n: 8, name: '바람 부스 & 식수대', short: '환경동아리 바람 · 물 채우기', cat: 'booth', tone: 'eco', label: '친환경', desc: '환경동아리 바람의 기후행동 부스입니다. 옆 식수대에서 텀블러에 물을 채울 수 있어요.', missions: ['b7'] },
       { n: 11, tag: '📷', name: '포토존', short: '완주 인생샷', cat: 'place', tone: '', label: '포토존', desc: '부지런의 추억을 사진으로 남겨보세요.' },
       { n: 12, tag: '🎤', name: '무대 & 관객석', short: '개·폐회식 · 공연 · 준비운동', cat: 'place', tone: '', label: '무대', desc: '개·폐회식, 동아리 공연, 다함께 준비운동이 열리는 무대입니다. 무대 옆 9·10번 천막은 공연 대기실이에요.', stage: true }
     ];
 
     // QR 코드 값: <앱 주소>#/q/<code>. 휴대폰 기본 카메라로 찍어도 앱이 열리며 도장이 찍힌다.
-    // 도장을 받을 수 있는 곳: 부스 미션(booth) + 걷기 코스 퀴즈(quiz). 이 중 아무거나 GOAL개를 모으면 완주.
-    // 퀴즈 QR을 찍으면 문제가 나오고, 맞혀야 도장이 찍힌다.
+    // 도장을 받을 수 있는 곳: 걷기 코스 프로그램(quiz/course) + 부스 미션(booth). 이 중 아무거나 GOAL개를 모으면 완주.
+    //  type 'quiz'   : QR을 찍으면 문제가 나오고, 맞혀야 도장 (survey: true 면 설문 완료 코드까지)
+    //  type 'course' : 코스 스태프가 보여주는 QR을 찍으면 바로 도장 (found 가 있으면 발견 메시지)
+    //  type 'booth'  : 부스 체험 후 QR을 찍으면 도장
     const STAMPS = [
-      { id: 'b1', type: 'booth', title: '소원나무에 바람 적기', where: '5번 부스 · 천원의 행복', booth: 5, how: '소원나무에 바람을 적고 부스의 QR을 스캔하세요.', code: 'BJR-M1-K4H7', pin: '4127' },
-      { id: 'b2', type: 'booth', title: '텀블러 할인매장 알아보기', where: '4번 부스 · 텀블러 할인매장 지원사업', booth: 4, how: '텀블러 할인 가게 안내를 듣고 부스의 QR을 스캔하세요.', code: 'BJR-M2-T7Q2', pin: '7358' },
-      { id: 'b3', type: 'booth', title: '페이스 페인팅 또는 양말목 만들기', where: '6번 부스 · 밥 아저씨 & 한라대 총학', booth: 6, how: '두 체험 중 하나에 참여하고 부스의 QR을 스캔하세요.', code: 'BJR-M3-R8N5', pin: '8264' },
-      { id: 'b4', type: 'booth', title: '건강 체크 또는 유학생 교류', where: '7번 부스 · 바이탈 & 유학생', booth: 7, how: '건강 체크나 유학생 부스에 참여하고 QR을 스캔하세요.', code: 'BJR-M4-V9C3', pin: '9105' },
-      { id: 'b5', type: 'booth', title: '바람 기후행동 참여', where: '8번 부스 · 바람', booth: 8, how: '바람 부스 활동에 참여하고 QR을 스캔하세요.', code: 'BJR-M5-G5W8', pin: '5693' },
-      { id: 'q1', type: 'quiz', title: '코스 퀴즈 ① 쓰레기 없는 행사', where: '걷기 코스 QR ①', code: 'BJR-Q1-A3F6', pin: '1374',
-        q: '부지런 행사장에 일부러 두지 않은 것은 무엇일까요?', options: ['쓰레기통', '식수대', '물품보관소'], answer: 0,
-        explain: '쓰레기통이 없어요. 내 쓰레기는 내가 되가져가요!' },
-      { id: 'q2', type: 'quiz', title: '코스 퀴즈 ② 플라스틱 프리 제주', where: '걷기 코스 QR ②', code: 'BJR-Q2-P8D1', pin: '2851',
-        q: '‘2040 플라스틱 프리 제주’에서 2040은 무엇일까요?', options: ['행사 참가자 수', '플라스틱 없는 제주를 이루려는 목표 연도', '걷기 코스 길이(m)'], answer: 1,
-        explain: '2040년까지 플라스틱 없는 제주를 만드는 것이 목표예요.' },
-      { id: 'q3', type: 'quiz', title: '코스 퀴즈 ③ 반환점', where: '걷기 코스 QR ③', code: 'BJR-Q3-H2K9', pin: '3962',
-        q: '오늘 걷기 코스의 반환점은 어디일까요?', options: ['용두암', '도두봉', '사라봉'], answer: 1,
-        explain: '도두봉을 돌아 용담레포츠공원으로 돌아와요.' },
-      { id: 'q4', type: 'quiz', title: '코스 퀴즈 ④ 완주 메달', where: '걷기 코스 QR ④', code: 'BJR-Q4-M5T3', pin: '4583',
-        q: '부지런의 완주 메달은 무엇으로 만들까요?', options: ['재활용 금속', '내가 달고 걸은 배번표', '플라스틱 병뚜껑'], answer: 1,
-        explain: '배번표를 접어 종이 메달로 업사이클링해요.' },
-      { id: 'q5', type: 'quiz', survey: true, title: '코스 퀴즈 ⑤ 천원의 학식', where: '걷기 코스 QR ⑤', code: 'BJR-Q5-W7N4', pin: '5217',
-        q: '‘천원의 학식’ 서명에 함께한 대학생은 약 몇 명일까요?', options: ['약 190명', '약 1,900명', '약 19,000명'], answer: 1,
-        explain: '약 1,900명의 대학생이 서명으로 연대했어요.' }
+      { id: 'c1', type: 'quiz', survey: true, icon: '❓', title: '천원의 학식 퀴즈', short: '천원의 학식 퀴즈', where: '코스 프로그램 ① · 공룡 옷 입은 스태프를 찾아요', code: 'BJR-Q5-W7N4', pin: '5217',
+        hint: '코스에서 공룡 옷을 입고 QR을 든 스태프를 찾아보세요!',
+        q: '대학생들이 생활비 걱정 없이 한 끼를 천원에 먹을 수 있는 학식을 만들고자 하는 프로젝트의 이름은?',
+        options: ['만원의 행복', '오천원의 기적', '천원의 행복 프로젝트', '청년문화예술패스', '생활비부담 제로 프로젝트'], answer: 2,
+        explain: '천원의 행복 프로젝트는 고물가 시대 대학생들의 식비와 생활비 부담을 덜기 위해 시작되었어요. 5월부터 지금까지 약 1,900명의 대학생이 서명으로 연대했어요. ‘부지런’은 그 청년 자치의 힘을 이어, 2040 플라스틱 프리 제주를 위해 일회용품 없는 축제를 직접 실천하는 걷기대회예요. 천원의 학식 실현을 위한 서명에 동참해주세요!' },
+      { id: 'c2', type: 'course', icon: '♻️', title: '올바른 분리수거 방법을 알려줘!', short: '분리수거 게임', where: '코스 프로그램 ② · 분리수거 게임', code: 'BJR-C2-R4S8', pin: '2851',
+        hint: '코스의 분리수거 게임에 참여하면 스태프가 QR을 보여줘요!' },
+      { id: 'c3', type: 'course', icon: '🔍', title: '숨겨진 QR을 찾아라!', short: '숨겨진 QR', where: '코스 프로그램 ③ · 코스 어딘가에 숨어 있어요', code: 'BJR-C3-H9D2', pin: '3962',
+        hint: '코스 어딘가에 거북이 QR이 숨어 있어요. 잘 찾아보세요!',
+        found: { title: '저를 발견해주셔서 감사해요!', desc: '꼭 도장 5개를 다 모아서 기념품 받아가세요!' } },
+      { id: 'b1', type: 'booth', icon: '🎪', title: '소원나무에 내가 바라는 바람 적기', short: '소원나무', where: '5번 부스 · 천원의 행복', booth: 5, how: '소원나무에 바람을 적고 부스의 QR을 스캔하세요.', code: 'BJR-M1-K4H7', pin: '4127' },
+      { id: 'b2', type: 'booth', icon: '🎪', title: '텀블러 할인매장 지도 구독하기', short: '텀블러 지도 구독', where: '4번 부스 · 텀블러 할인매장 지원사업', booth: 4, how: '텀블러 할인매장 지도를 구독하고 QR을 스캔하세요. 음료도 받을 수 있어요!', code: 'BJR-M2-T7Q2', pin: '7358' },
+      { id: 'b3', type: 'booth', icon: '🎪', title: '페이스 페인팅 체험', short: '페이스 페인팅', where: '6번 부스', booth: 6, how: '페이스 페인팅을 받고 QR을 스캔하세요.', code: 'BJR-M3-R8N5', pin: '8264' },
+      { id: 'b4', type: 'booth', icon: '🎪', title: '양말목 키링 만들기', short: '양말목 키링', where: '6번 부스', booth: 6, how: '양말목 키링을 만들고 QR을 스캔하세요.', code: 'BJR-M6-Y6K2', pin: '6481' },
+      { id: 'b5', type: 'booth', icon: '🎪', title: '타로카드 체험', short: '타로카드', where: '7번 부스', booth: 7, how: '타로카드 체험을 하고 QR을 스캔하세요.', code: 'BJR-M4-V9C3', pin: '9105' },
+      { id: 'b6', type: 'booth', icon: '🎪', title: '내가 바라는 교육 환경은?', short: '내가 바라는 교육 환경', where: '7번 부스 · 교육 동아리 바이탈', booth: 7, how: '내가 바라는 교육 환경을 나누고 QR을 스캔하세요.', code: 'BJR-M7-E7D5', pin: '7246' },
+      { id: 'b7', type: 'booth', icon: '🎪', title: '당신의 스트레스 지수는?', short: '스트레스 지수', where: '8번 부스 · 간호 동아리 바이탈', booth: 8, how: '스트레스 지수를 확인하고 QR을 스캔하세요.', code: 'BJR-M5-G5W8', pin: '5693' }
     ];
     const GOAL = 5;
     // 천원의 학식 설문(구글 폼). survey: true 인 퀴즈는 정답 뒤 설문을 하고 완료 코드를 입력해야 도장을 준다.
@@ -1047,13 +1047,13 @@
     ];
 
     const TIMELINE = [
-      { s: '14:00', e: '15:00', type: 'participant booth', hl: 1, title: '🎪 부스 시작', desc: '참가자 등록, 티셔츠·배번표 수령, 거북이 도장판 스탬프 투어 시작' },
-      { s: '15:00', e: '16:00', type: 'participant booth', title: '🎸 공연', desc: '동아리 밴드·댄스·수어 공연 등 사전 무대' },
+      { s: '14:00', e: '15:30', type: 'participant booth', hl: 1, title: '🎪 부스 시작', desc: '참가자 등록, 티셔츠·배번표 수령, 거북이 도장판 스탬프 투어 시작' },
+      { s: '15:30', e: '16:00', type: 'participant booth', title: '🎸 공연', desc: '제주도 내 학생들이 준비한 개회식 무대' },
       { s: '16:00', e: '16:30', type: 'participant booth', hl: 1, title: '📢 개회식', desc: '제주 대학생 공동 선언' },
       { s: '16:30', e: '17:00', type: 'participant', title: '🙆 준비 운동 및 출발 준비', desc: '부상 방지를 위한 전신 스트레칭 체조' },
-      { s: '17:00', e: '17:30', type: 'participant', hl: 1, title: '🚶 걷기대회 진행', desc: '도두봉 반환 왕복 약 7km' },
-      { s: '17:30', e: '18:30', type: 'participant booth', hl: 1, title: '🥣 완주 기념 부스 (메달 접기 / 음식)', desc: '배번표 종이 메달 접기, 리턴잇 다회용기 음식 나눔 & 반납존 운영' },
-      { s: '18:30', e: '19:30', type: 'participant booth', hl: 1, title: '🎉 폐회식', desc: '서포터즈 축하 무대와 럭키드로우 추첨', open: 1 }
+      { s: '17:00', e: '19:00', type: 'participant', hl: 1, title: '🚶 걷기대회 진행', desc: '도두봉 반환 왕복 약 7km · 코스 곳곳의 프로그램에서 도장도 모아보세요' },
+      { s: '17:30', e: '19:00', type: 'participant booth', hl: 1, title: '🥣 완주 기념 부스', desc: '배번표를 재활용해 메달 접기, 완주 기념 음식 나눔', open: 1 },
+      { s: '18:30', e: '19:30', type: 'participant booth', hl: 1, title: '🎉 폐회식', desc: '서포터즈 공연 및 폐회 선언', open: 1 }
     ];
     const EVENT_DATE = '2026-10-03';
 
@@ -1138,7 +1138,7 @@
     grid.innerHTML = BOOTHS.map(b => `
       <button class="booth${b.stage ? ' stage' : ''}" data-cat="${b.cat}" data-booth="${b.n}">
         <span class="num ${b.tone}">${b.tag || b.n}</span>
-        ${b.mission ? `<span class="booth-stamp" data-mission-tag="${b.mission}">🐢 도장</span>` : ''}
+        ${b.missions ? `<span class="booth-stamp" data-booth-tag="${b.n}">🐢 도장</span>` : ''}
         <span class="booth-name">${b.name}</span>
         <span class="booth-desc">${b.short}</span>
       </button>`).join('');
@@ -1165,14 +1165,13 @@
       if (b.tag) $('#sheetTitle').textContent = b.name;
       $('#sheetCat').textContent = b.label;
       $('#sheetDesc').textContent = b.desc;
-      const m = b.mission && STAMPS.find(x => x.id === b.mission);
-      $('#sheetMission').hidden = !m;
-      $('#sheetScan').hidden = !m || !!state.stamps[m.id];
-      if (m) {
+      const ms = (b.missions || []).map(id => STAMPS.find(x => x.id === id));
+      $('#sheetMission').hidden = !ms.length;
+      $('#sheetScan').hidden = !ms.length || ms.every(m => state.stamps[m.id]);
+      $('#sheetMission').innerHTML = ms.map(m => {
         const done = state.stamps[m.id];
-        $('#sheetMissionTitle').textContent = `🐢 도장 미션 · ${m.title}` + (done ? ' (완료)' : '');
-        $('#sheetMissionDesc').textContent = done ? `${hhmm(done)}에 ${orderOf(m.id)}번째 도장으로 받았어요.` : m.how;
-      }
+        return `<h5>🐢 도장 미션 · ${m.title}${done ? ' (완료)' : ''}</h5><p>${done ? `${hhmm(done)}에 ${orderOf(m.id)}번째 도장으로 받았어요.` : m.how}</p>`;
+      }).join('');
       openScrim($('#boothSheet'));
     }
     $('#sheetScan').addEventListener('click', () => go('scan'));
@@ -1334,13 +1333,15 @@
     setInterval(updateNow, 60000);
 
     /* ================== 도장판 ================== */
+    const tagOf = m => m.type === 'quiz' ? 'QR·퀴즈' : 'QR 스캔';
     const missionRow = m => `
       <button class="mission" data-mission="${m.id}">
-        <span class="m-circle">${m.type === 'quiz' ? '❓' : '🎪'}</span>
+        <span class="m-circle">${m.icon}</span>
         <span class="m-info"><span class="m-name">${m.title}</span><br><span class="m-booth">${m.where}</span></span>
-        <span class="m-tag">${m.type === 'quiz' ? 'QR·퀴즈' : 'QR 스캔'}</span>
+        <span class="m-tag">${tagOf(m)}</span>
       </button>`;
-    $('#quizList').innerHTML = STAMPS.filter(m => m.type === 'quiz').map(missionRow).join('');
+    $('#raceSub').textContent = `(${STAMPS.length}곳 중 아무 5곳)`;
+    $('#courseList').innerHTML = STAMPS.filter(m => m.type !== 'booth').map(missionRow).join('');
     $('#boothList').innerHTML = STAMPS.filter(m => m.type === 'booth').map(missionRow).join('');
     $('[data-screen="stamp"]').addEventListener('click', e => {
       const el = e.target.closest('.mission');
@@ -1348,7 +1349,7 @@
       const m = STAMPS.find(x => x.id === el.dataset.mission);
       if (m.type === 'booth') openBooth(m.booth);
       else if (state.stamps[m.id]) toast(`${m.title} · ${orderOf(m.id)}번째 도장으로 받았어요`);
-      else toast('걷기 코스에 있는 퀴즈 QR을 찾아 찍어보세요!');
+      else toast(m.hint);
     });
 
     function renderStamps(justId) {
@@ -1360,9 +1361,16 @@
         const done = state.stamps[m.id];
         el.classList.toggle('done', !!done);
         el.classList.toggle('just', justId === m.id);
-        $('.m-circle', el).textContent = done ? '🐢' : (m.type === 'quiz' ? '❓' : '🎪');
-        $('.m-tag', el).textContent = done ? `${orderOf(m.id)}번째 · ${hhmm(done)}` : (m.type === 'quiz' ? 'QR·퀴즈' : 'QR 스캔');
-        $$(`[data-mission-tag="${m.id}"]`).forEach(t => { t.classList.toggle('done', !!done); t.textContent = done ? '🐢 완료' : '🐢 도장'; });
+        $('.m-circle', el).textContent = done ? '🐢' : m.icon;
+        $('.m-tag', el).textContent = done ? `${orderOf(m.id)}번째 · ${hhmm(done)}` : tagOf(m);
+      });
+      // 부스맵 카드: 그 부스의 미션을 몇 개 했는지
+      BOOTHS.filter(b => b.missions).forEach(b => {
+        const d = b.missions.filter(id => state.stamps[id]).length, n = b.missions.length;
+        $$(`[data-booth-tag="${b.n}"]`).forEach(t => {
+          t.classList.toggle('done', d === n);
+          t.textContent = d === n ? '🐢 완료' : d ? `🐢 ${d}/${n}` : (n > 1 ? `🐢 도장 ${n}` : '🐢 도장');
+        });
       });
 
       // 도장판: 받은 순서대로 칸을 채운다 (최소 GOAL칸, 넘치면 늘어남)
@@ -1372,7 +1380,7 @@
         if (!m) return `<div class="slot"><span class="slot-ring">${i + 1}</span><span class="slot-name">빈 칸</span></div>`;
         return `<div class="slot on${justId === m.id ? ' just' : ''}${i >= GOAL ? ' extra' : ''}">
           <span class="slot-ring">🐢<b>${i + 1}</b></span>
-          <span class="slot-name">${m.type === 'quiz' ? '퀴즈' : '부스'} · ${m.title.replace(/^코스 퀴즈 \S+ /, '')}</span>
+          <span class="slot-name">${m.type === 'booth' ? '부스' : '코스'} · ${m.short}</span>
           <span class="slot-time">${hhmm(state.stamps[m.id])}</span>
         </div>`;
       }).join('');
@@ -1382,7 +1390,7 @@
       $('#homeCount').textContent = p;
       $('#tileBadge').textContent = `${p}/5`;
       $$('#homeDots i').forEach((d, i) => d.classList.toggle('on', i < p));
-      $('#homeStampDesc').textContent = c >= GOAL ? (state.claimedAt ? '키링 교환 완료!' : '완주! 본부(1번 천막)에서 키링을 받으세요') : c === 0 ? '코스 퀴즈·부스 미션 QR로 도장을 모아보세요' : `${GOAL - c}개만 더 모으면 키링!`;
+      $('#homeStampDesc').textContent = c >= GOAL ? (state.claimedAt ? '키링 교환 완료!' : '완주! 본부(1번 천막)에서 키링을 받으세요') : c === 0 ? '코스 프로그램·부스 미션 QR로 도장을 모아보세요' : `${GOAL - c}개만 더 모으면 키링!`;
 
       // 거북이 위치: 출발(4px) ~ 깃발 앞(100% - 72px)
       const runner = $('#runner'), bubble = $('#bubble');
@@ -1443,7 +1451,8 @@
       } else if (c > GOAL) {
         showResult({ kind: 'ok', emoji: '🐢', stampText: `${c}번째`, title: '보너스 도장 쾅!', desc: `${m.title}\n이미 완주했지만 도장을 하나 더 모았어요!`, again: true });
       } else {
-        showResult({ kind: 'ok', emoji: '🐢', stampText: `${c}번째`, title: `${c}번째 도장 쾅!`, desc: `${m.title}\n${QUOTES[c]} (${c}/${GOAL})`, again: true });
+        if (m.found) showResult({ kind: 'ok', emoji: '🐢', stampText: `${c}번째`, title: m.found.title, desc: `${m.found.desc}\n(${c}번째 도장 · ${c}/${GOAL})`, again: true });
+        else showResult({ kind: 'ok', emoji: '🐢', stampText: `${c}번째`, title: `${c}번째 도장 쾅!`, desc: `${m.title}\n${QUOTES[c]} (${c}/${GOAL})`, again: true });
       }
     }
 
@@ -1457,7 +1466,7 @@
       $('#quizQ').textContent = m.q;
       $('#quizFeedback').textContent = '';
       $('#quizFeedback').className = 'quiz-feedback';
-      $('#quizOptions').innerHTML = m.options.map((o, i) => `<button class="quiz-opt" data-i="${i}"><b>${'①②③④'[i]}</b>${o}</button>`).join('');
+      $('#quizOptions').innerHTML = m.options.map((o, i) => `<button class="quiz-opt" data-i="${i}"><b>${'①②③④⑤'[i]}</b>${o}</button>`).join('');
       openScrim($('#quizModal'));
       // 이미 정답을 맞히고 설문만 남은 경우 바로 설문 단계로
       if (m.survey && SURVEY_URL && state.passed && state.passed[m.id]) {
