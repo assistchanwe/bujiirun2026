@@ -501,6 +501,7 @@
     .bonus-head b { font-size: 15px; font-weight: 900; }
     .bonus-tag { flex-shrink: 0; font-size: 11px; font-weight: 800; color: #fff; background: #7c3aed; padding: 2px 8px; border-radius: 999px; }
     .bonus-box.done .bonus-tag { background: rgb(255 255 255 / .25); }
+    .bonus-ig { display: inline-block; margin-top: 6px; font-weight: 800; color: inherit; text-decoration: underline; text-underline-offset: 2px; }
     .bonus-box p { font-size: 12.5px; line-height: 1.55; color: inherit; opacity: .9; }
     .bonus-dots { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; margin-top: 10px; }
     .bonus-dots i { height: 8px; border-radius: 4px; background: #e9d5ff; }
@@ -1464,8 +1465,8 @@
       $('#bonusDesc').innerHTML = state.bonusAt
         ? '코스와 부스를 모두 돌아본 진짜 부지런러! 고마워요.'
         : c >= GOAL2
-          ? `<strong>본부(1번 천막)</strong>에 이 화면을 보여주세요. 선착순 ${BONUS_LIMIT}명에게 <strong>추가 상품</strong>을 드려요.<br>준비한 수량이 다 떨어지면 받을 수 없어요.`
-          : `코스 프로그램과 부스 미션 ${GOAL2}곳을 모두 돌면 <strong>선착순 ${BONUS_LIMIT}명</strong>에게 추가 상품을 드려요. ${GOAL2 - b10}곳 남았어요!`;
+          ? `<strong>본부(1번 천막)</strong>에 이 화면을 보여주세요. 선착순 ${BONUS_LIMIT}명에게 <strong>추가 상품</strong>을 드려요.<br>준비한 수량이 다 떨어지면 받을 수 없어요.<br><a class="bonus-ig" href="https://www.instagram.com/bujiirun_jeju2026" target="_blank" rel="noopener">📢 마감 여부는 인스타그램 @bujiirun_jeju2026에서 확인해주세요!</a>`
+          : `코스 프로그램과 부스 미션 ${GOAL2}곳을 모두 돌면 <strong>선착순 ${BONUS_LIMIT}명</strong>에게 추가 상품을 드려요. ${GOAL2 - b10}곳 남았어요!<br><a class="bonus-ig" href="https://www.instagram.com/bujiirun_jeju2026" target="_blank" rel="noopener">📢 마감 여부는 인스타그램 @bujiirun_jeju2026에서 확인해주세요!</a>`;
       const bn = $('#bonusNote');
       bn.hidden = c < GOAL2;
       bn.textContent = state.bonusAt ? `${hhmm(state.bonusAt)}에 추가 상품을 받았어요.` : '본부 스태프에게 추가 상품 확인 QR 스캔을 요청하세요';
@@ -1513,7 +1514,9 @@
         showResult({ kind: 'ok', emoji: '🏁', stampText: '완주', title: '5개의 도장을 모두 모으셨군요!', desc: '느릿느릿 걸었지만 우리는 제주를 바꾸는 커다란 한 걸음을 내디뎠어요.\n\n본부(1번 천막)에 도장판 화면을 보여주고\n업사이클링 키캡 키링을 무료로 받으세요.', again: false });
         confetti();
       } else if (c === GOAL2) {
-        showResult({ kind: 'ok', emoji: '🏆', stampText: '10개 완성', title: '도장 10개 모두 완성!', desc: `코스와 부스를 모두 돌아봤어요!\n\n본부(1번 천막)에 도장판 화면을 보여주면\n선착순 ${BONUS_LIMIT}명에게 추가 상품을 드려요.`, again: false });
+        showResult({ kind: 'ok', emoji: '🏆', stampText: '10개 완성', title: '도장 10개 모두 완성!', desc: `코스와 부스를 모두 돌아봤어요!\n\n본부(1번 천막)에 도장판 화면을 보여주면\n선착순 ${BONUS_LIMIT}명에게 추가 상품을 드려요.
+
+마감 여부는 인스타그램 @bujiirun_jeju2026에서 확인해주세요!`, again: false });
         confetti();
       } else if (c > GOAL) {
         showResult({ kind: 'ok', emoji: '🐢', stampText: `${c}번째`, title: '보너스 도장 쾅!', desc: `${m.title}\n${GOAL2}개 모두 모으면 선착순 ${BONUS_LIMIT}명 추가 상품! (${c}/${GOAL2})`, again: true });

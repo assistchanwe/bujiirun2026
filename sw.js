@@ -2,7 +2,7 @@
 // 한 번 앱을 열면 앱 화면·QR 인식 모듈·배치도 이미지를 휴대폰에 저장해 두고,
 // 인터넷이 끊기거나 느려도 저장본으로 앱을 연다.
 // 앱 파일을 고쳐 배포할 때는 VERSION 을 올리면 예전 저장본이 정리된다.
-const VERSION = 'bujiirun-v10';
+const VERSION = 'bujiirun-v11';
 const FILES = ['./', './index.html', './jsQR.min.js', './booth-map.webp', './course-map.webp'];
 
 self.addEventListener('install', event => {
