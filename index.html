@@ -722,7 +722,7 @@
               <span class="mt-icon">🎪</span><span class="mt-title">부스 배치도</span><span class="mt-desc">천막 11동 & 메인 무대</span>
             </button>
             <button class="menu-tile" data-go="timetable">
-              <span class="mt-icon">⏱️</span><span class="mt-title">타임테이블</span><span class="mt-desc">14:00 부스 시작부터 18:30 폐회식까지</span>
+              <span class="mt-icon">⏱️</span><span class="mt-title">타임테이블</span><span class="mt-desc">14:00 부스 운영부터 18:55 행사 마무리까지</span>
             </button>
             <button class="menu-tile eco" data-go="stamp">
               <span class="mt-badge" id="tileBadge">0/5</span>
@@ -741,9 +741,9 @@
         <div class="stack">
           <div class="card">
             <dl class="fact-list">
-              <div class="fact"><dt>일시</dt><dd>2026년 10월 3일(토) 14:00 부스 시작 ~ 18:30 폐회식</dd></div>
+              <div class="fact"><dt>일시</dt><dd>2026년 10월 3일(토) 14:00 부스 운영 ~ 18:55 행사 마무리<br><span style="color:var(--muted);font-size:12.5px">부스는 14:00~16:00 운영해요</span></dd></div>
               <div class="fact"><dt>장소</dt><dd>제주시 용담레포츠공원 (휴식공간 · 잔디운동장)</dd></div>
-              <div class="fact"><dt>코스</dt><dd>용담레포츠공원 출발 → 어영공원 → 도두봉 반환(세븐일레븐), 순환형 약 7.8km<br><span style="color:var(--muted);font-size:12.5px">A그룹 16:50 · B그룹 17:00 출발 · 19:00 마감</span></dd></div>
+              <div class="fact"><dt>코스</dt><dd>용담레포츠공원 출발 → 어영공원 → 도두봉 반환(세븐일레븐), 순환형 약 7.8km<br><span style="color:var(--muted);font-size:12.5px">16:15 A그룹 출발 → 정렬 후 B그룹 출발 · 18:30 마감</span></dd></div>
               <div class="fact"><dt>참가비</dt><dd>대학생 7,000원 / 일반 10,000원</dd></div>
             </dl>
           </div>
@@ -766,7 +766,7 @@
             <div class="eco-list">
               <div class="eco-item"><span class="ei">🥤</span><div><h4>개인 텀블러 필수 지참</h4><p>종이컵·페트병을 두지 않습니다. 대용량 급수대에서 텀블러에 물을 채워주세요.</p></div></div>
               <div class="eco-item"><span class="ei">🍽️</span><div><h4>리턴잇 다회용기 & 반납존</h4><p>완주 비빔밥은 세척·재사용 다회용기에 담겨 나갑니다. 식사 후 <strong>완주 기념 부스 반납존</strong>에 돌려주세요.</p></div></div>
-              <div class="eco-item"><span class="ei">🏅</span><div><h4>배번표로 만드는 종이 메달</h4><p>금속 메달 대신, 달고 걸은 배번표를 접어 나만의 업사이클링 메달을 만듭니다. (17:30 완주 기념 부스)</p></div></div>
+              <div class="eco-item"><span class="ei">🏅</span><div><h4>배번표로 만드는 종이 메달</h4><p>금속 메달 대신, 달고 걸은 배번표를 접어 나만의 업사이클링 메달을 만듭니다. (18:00 완주 기념 부스)</p></div></div>
               <div class="eco-item"><span class="ei">🛍️</span><div><h4>비닐 없는 짐보관</h4><p>비닐봉투를 드리지 않아요. 에코백·배낭을 챙기거나 기부받은 종이 쇼핑백을 이용해주세요.</p></div></div>
             </div>
           </div>
@@ -1025,12 +1025,12 @@
     const BOOTHS = [
       { n: 1, name: '본부', short: '상황실 · 의료 · 리워드 교환', cat: 'operation', tone: '', label: '운영·안내', desc: '행사 총괄 본부입니다. 구급상자, 미아보호, 긴급상황 지원을 맡고 있어요. 도장 5개를 모으면 여기서 키링을 받아요.' },
       { n: 2, name: '참가자 등록 부스', short: '티셔츠·배번표 수령', cat: 'operation', tone: '', label: '운영·안내', desc: '참가자 본인 확인 후 티셔츠·배번표·스트링백을 나눠드립니다. 현장 접수도 이곳에서 해요.' },
-      { n: 3, name: '물품보관 & 식수대', short: '비닐 없는 짐보관 · 물 채우기', cat: 'operation', tone: '', label: '운영·안내', desc: '비닐봉투 대신 개인 가방이나 기부받은 종이 쇼핑백에 짐을 보관합니다. 식수대에서 텀블러에 물을 채울 수 있어요.' },
+      { n: 3, name: '물품보관', short: '비닐 없는 짐보관', cat: 'operation', tone: '', label: '운영·안내', desc: '비닐봉투 대신 개인 가방이나 기부받은 종이 쇼핑백에 짐을 보관합니다.' },
       { n: 4, name: '텀블러 할인매장 지원사업', short: '텀블러 할인 가게 안내', cat: 'booth', tone: 'eco', label: '친환경', desc: '텀블러를 가져가면 할인해주는 제주의 가게들과 텀블러 할인매장 지원사업을 소개합니다.' },
-      { n: 5, name: '천원의 행복 & 동아리 소개', short: '소원나무 · 참여 동아리 소개', cat: 'booth', tone: 'org', label: '대학생·동아리', desc: '‘천원의 행복’ 부스에서 소원나무에 바람을 적고, 부지런에 함께한 동아리들을 만나보세요.', missions: ['b1'] },
-      { n: 6, name: '부지런한 밥 아저씨 & 한라대 총학', short: '페이스 페인팅 · 양말목 키링', cat: 'booth', tone: 'org', label: '체험', desc: '부지런한 밥 아저씨의 페이스 페인팅, 한라대 총학생회의 양말목 키링 만들기 체험이 열려요.', missions: ['b3', 'b4'] },
-      { n: 7, name: '타로카드 & 교육 동아리 바람', short: '타로카드 · 내가 바라는 교육 환경', cat: 'booth', tone: 'org', label: '대학생·동아리', desc: '타로카드 체험과, 교육 동아리 바람이 묻는 ‘내가 바라는 교육 환경은?’ 부스입니다.', missions: ['b5', 'b6'] },
-      { n: 8, name: '간호 동아리 바이탈 & 식수대', short: '스트레스 지수 · 물 채우기', cat: 'booth', tone: 'org', label: '대학생·동아리', desc: '간호 동아리 바이탈이 ‘당신의 스트레스 지수는?’을 함께 확인해요. 옆 식수대에서 텀블러에 물을 채울 수 있어요.', missions: ['b7'] },
+      { n: 5, name: '천원의 행복 & 식수·다회용기', short: '소원나무 · 물 채우기 · 다회용기', cat: 'booth', tone: 'org', label: '대학생·동아리', desc: '‘천원의 행복’ 부스에서 소원나무에 바람을 적어보세요. 식수대에서 텀블러에 물을 채우고, 다회용기 안내도 받을 수 있어요. (14:00~16:00 운영)', missions: ['b1'] },
+      { n: 6, name: '부지런한 밥 아저씨 & 한라대 총학', short: '페이스 페인팅 · 양말목 키링', cat: 'booth', tone: 'org', label: '체험', desc: '부지런한 밥 아저씨의 페이스 페인팅, 한라대 총학생회의 양말목 키링 만들기 체험이 열려요. (14:00~16:00 운영)', missions: ['b3', 'b4'] },
+      { n: 7, name: '타로카드 & 바람', short: '타로카드 · 내가 바라는 교육 환경', cat: 'booth', tone: 'org', label: '대학생·동아리', desc: '타로카드 체험과, 교육 동아리 바람이 묻는 ‘내가 바라는 교육 환경은?’ 부스입니다. (14:00~16:00 운영)', missions: ['b5', 'b6'] },
+      { n: 8, name: '유학생 부스 & 바이탈', short: '유학생 음식 · 스트레스 지수', cat: 'booth', tone: 'org', label: '대학생·동아리', desc: '유학생들이 준비한 음식을 만나고, 간호 동아리 바이탈과 ‘당신의 스트레스 지수는?’을 확인해요. (14:00~16:00 운영)', missions: ['b7'] },
       { n: 11, tag: '📷', name: '포토존', short: '완주 인생샷', cat: 'place', tone: '', label: '포토존', desc: '부지런의 추억을 사진으로 남겨보세요.' },
       { n: 12, tag: '🎤', name: '무대 & 관객석', short: '개·폐회식 · 공연 · 준비운동', cat: 'place', tone: '', label: '무대', desc: '개·폐회식, 동아리 공연, 다함께 준비운동이 열리는 무대입니다. 무대 옆 9·10번 천막은 공연 대기실이에요.', stage: true }
     ];
@@ -1062,7 +1062,7 @@
       { id: 'b5', type: 'booth', icon: '🎪', title: '타로카드 체험', short: '타로카드', where: '7번 부스 · 무엇이든 물어보세요!', booth: 7, how: '타로카드 체험을 하고 QR을 스캔하세요.', code: 'BJR-M4-V9C3', pin: '9105' },
       { id: 'b6', type: 'booth', icon: '🎪', title: '내가 바라는 교육 환경은?', short: '내가 바라는 교육 환경', where: '7번 부스 · 교육 동아리 바람', booth: 7, how: '내가 바라는 교육 환경을 나누고 QR을 스캔하세요.', code: 'BJR-M7-E7D5', pin: '7246' },
       { id: 'b7', type: 'booth', icon: '🎪', title: '당신의 스트레스 지수는?', short: '스트레스 지수', where: '8번 부스 · 간호 동아리 바이탈', booth: 8, how: '스트레스 지수를 확인하고 QR을 스캔하세요.', code: 'BJR-M5-G5W8', pin: '5693' },
-      { id: 'b8', type: 'booth', icon: '🏅', title: '완주 기념 배번표 메달 접기', short: '배번표 메달', where: '완주 기념 부스 · 17:30부터', how: '완주 후 배번표로 메달을 접고 QR을 스캔하세요. 포토존에서 인증샷까지 남겨볼까요?!', code: 'BJR-M8-F8D3', pin: '8835' }
+      { id: 'b8', type: 'booth', icon: '🏅', title: '완주 기념 배번표 메달 접기', short: '배번표 메달', where: '완주 기념 부스 · 18:00부터', how: '완주 후 배번표로 메달을 접고 QR을 스캔하세요. 포토존에서 인증샷까지 남겨볼까요?!', code: 'BJR-M8-F8D3', pin: '8835' }
     ];
     const GOAL = 5;
     // 천원의 학식 설문(구글 폼). survey: true 인 퀴즈는 정답 뒤 설문을 하고 완료 코드를 입력해야 도장을 준다.
@@ -1086,13 +1086,21 @@
     ];
 
     const TIMELINE = [
-      { s: '14:00', e: '15:30', type: 'participant booth', hl: 1, title: '🎪 부스 시작', desc: '참가자 등록, 티셔츠·배번표 수령, 거북이 도장판 스탬프 투어 시작' },
-      { s: '15:30', e: '16:00', type: 'participant booth', title: '🎸 공연', desc: '제주도 내 학생들이 준비한 개회식 무대' },
-      { s: '16:00', e: '16:30', type: 'participant booth', hl: 1, title: '📢 개회식', desc: '제주 대학생 공동 선언' },
-      { s: '16:30', e: '16:50', type: 'participant', title: '🙆 준비 운동 및 출발 준비', desc: '부상 방지를 위한 전신 스트레칭 체조' },
-      { s: '16:50', e: '19:00', type: 'participant', hl: 1, title: '🚶 걷기대회 진행', desc: 'A그룹 16:50 · B그룹 17:00 출발 · 순환형 약 7.8km · 19:00 마감 · 코스 프로그램에서 도장도 모아보세요' },
-      { s: '17:30', e: '19:00', type: 'participant booth', hl: 1, title: '🥣 완주 기념 부스', desc: '배번표를 재활용해 메달 접기, 완주 기념 음식 나눔', open: 1 },
-      { s: '18:30', e: '19:30', type: 'participant booth', hl: 1, title: '🎉 폐회식', desc: '서포터즈 공연 및 폐회 선언', open: 1 }
+      { s: '13:00', e: '14:30', type: 'booth', title: '🎤 공연팀 리허설', desc: '13:00 서포터즈 · 13:30 서포터즈(민, 솔) · 14:00 보물섬(풍물/안무) · 14:20 수어동아리 — 리허설 10분 전까지 도착' },
+      { s: '13:30', e: '14:00', type: 'booth', title: '🧰 부스 운영진 집결', desc: '부스 간판명 작성' },
+      { s: '14:00', e: '16:00', type: 'participant booth', hl: 1, title: '🎪 부스 운영', desc: '참가자 등록, 티셔츠·배번표 수령, 거북이 도장판 스탬프 투어 · 부스는 16:00에 마감해요' },
+      { s: '15:00', e: '15:50', type: 'participant booth', hl: 1, title: '🎸 개회식 및 축하공연', desc: '오프닝 → 보물섬(율동) · 팀 나란히 · 수어동아리 무대와 인터뷰 → 내빈 소개 → 축사(임문철 이사장)' },
+      { s: '15:40', e: '16:00', type: 'booth', title: '🧹 부스 마무리 정리', desc: '16:00 부스 마감' },
+      { s: '15:50', e: '16:00', type: 'participant booth', hl: 1, title: '📢 선언문 낭독', desc: '단장 · 한라대 총학생회 · 제주대 사범대' },
+      { s: '16:00', e: '16:10', type: 'participant', title: '🙆 준비운동', desc: '부상 방지를 위한 전신 스트레칭' },
+      { s: '16:10', e: '16:15', type: 'participant booth', title: '🥁 길트기 공연', desc: '보물섬 풍물 공연으로 출발길을 열어요' },
+      { s: '16:15', e: '16:25', type: 'participant', hl: 1, title: '🚶 걷기대회 출발', desc: 'A그룹 출발 → 정렬 후 B그룹 출발 · 순환형 약 7.8km · 코스 프로그램에서 도장도 모아보세요' },
+      { s: '18:00', e: '18:55', type: 'participant booth', hl: 1, title: '🥣 완주 기념 부스', desc: '완주 기념 비빔밥 나눔, 배번표를 재활용한 메달 접기' },
+      { s: '18:30', e: '18:40', type: 'participant booth', title: '⏱️ 걷기 마감', desc: '18:30까지 행사장으로 돌아와 주세요 · 폐회식 준비' },
+      { s: '18:40', e: '18:45', type: 'participant booth', hl: 1, title: '🎉 폐회식', desc: '사회자 멘트 · 단장 소감' },
+      { s: '18:45', e: '18:55', type: 'participant booth', title: '🎤 서포터즈 공연', desc: '소문의 낙원' },
+      { s: '18:55', e: '19:00', type: 'participant booth', title: '👋 행사 마무리', desc: '함께 걸어줘서 고마워요!' },
+      { s: '19:00', e: '19:30', type: 'booth', title: '🧹 전체 정리 및 뒷정리 점검', desc: '쓰레기 0 점검, 공원 원상복구' }
     ];
     const EVENT_DATE = '2026-10-03';
 
