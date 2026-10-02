@@ -814,11 +814,6 @@
       <!-- ============ 타임테이블 ============ -->
       <section class="screen" data-screen="timetable" data-title="타임테이블 · 10월 3일">
         <div class="stack">
-          <div class="seg" id="tlFilter">
-            <button class="active" data-role="all">전체 일정</button>
-            <button data-role="participant">참가자 기준</button>
-            <button data-role="booth">부스·공연진</button>
-          </div>
           <div class="timeline" id="timeline"></div>
           <p class="screen-lead" style="color:#dc2626; font-weight:700; margin-top:2px">* 당일 현장 상황에 따라 일부 변경될 수 있어요!</p>
         </div>
@@ -1086,11 +1081,8 @@
     ];
 
     const TIMELINE = [
-      { s: '13:00', e: '14:30', type: 'booth', title: '🎤 공연팀 리허설', desc: '13:00 서포터즈 · 13:30 서포터즈(민, 솔) · 14:00 보물섬(풍물/안무) · 14:20 수어동아리 — 리허설 10분 전까지 도착' },
-      { s: '13:30', e: '14:00', type: 'booth', title: '🧰 부스 운영진 집결', desc: '부스 간판명 작성' },
       { s: '14:00', e: '16:00', type: 'participant booth', hl: 1, title: '🎪 부스 운영', desc: '참가자 등록, 티셔츠·배번표 수령, 거북이 도장판 스탬프 투어 · 부스는 16:00에 마감해요' },
       { s: '15:00', e: '15:50', type: 'participant booth', hl: 1, title: '🎸 개회식 및 축하공연', desc: '오프닝 → 보물섬(율동) · 팀 나란히 · 수어동아리 무대와 인터뷰 → 내빈 소개 → 축사(임문철 이사장)' },
-      { s: '15:40', e: '16:00', type: 'booth', title: '🧹 부스 마무리 정리', desc: '16:00 부스 마감' },
       { s: '15:50', e: '16:00', type: 'participant booth', hl: 1, title: '📢 선언문 낭독', desc: '단장 · 한라대 총학생회 · 제주대 사범대' },
       { s: '16:00', e: '16:10', type: 'participant', title: '🙆 준비운동', desc: '부상 방지를 위한 전신 스트레칭' },
       { s: '16:10', e: '16:15', type: 'participant booth', title: '🥁 길트기 공연', desc: '보물섬 풍물 공연으로 출발길을 열어요' },
@@ -1100,7 +1092,6 @@
       { s: '18:40', e: '18:45', type: 'participant booth', hl: 1, title: '🎉 폐회식', desc: '사회자 멘트 · 단장 소감' },
       { s: '18:45', e: '18:55', type: 'participant booth', title: '🎤 서포터즈 공연', desc: '소문의 낙원' },
       { s: '18:55', e: '19:00', type: 'participant booth', title: '👋 행사 마무리', desc: '함께 걸어줘서 고마워요!' },
-      { s: '19:00', e: '19:30', type: 'booth', title: '🧹 전체 정리 및 뒷정리 점검', desc: '쓰레기 0 점검, 공원 원상복구' }
     ];
     const EVENT_DATE = '2026-10-03';
 
@@ -1360,13 +1351,6 @@
         <p class="tl-desc">${t.desc}</p>
       </div>`).join('');
 
-    $('#tlFilter').addEventListener('click', e => {
-      const b = e.target.closest('button');
-      if (!b) return;
-      $$('#tlFilter button').forEach(x => x.classList.toggle('active', x === b));
-      const role = b.dataset.role;
-      $$('.tl-item', tl).forEach(el => el.classList.toggle('hidden', role !== 'all' && !el.dataset.type.split(' ').includes(role)));
-    });
 
     const toMin = s => { const [h, m] = s.split(':').map(Number); return h * 60 + m; };
     function updateNow() {
