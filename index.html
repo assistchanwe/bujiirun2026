@@ -493,6 +493,20 @@
     .goal-box h4 { font-size: 17px; font-weight: 900; margin-bottom: 6px; }
     .goal-box p { font-size: 13px; line-height: 1.55; opacity: .96; }
     .goal-box .claim { margin-top: 12px; background: rgb(255 255 255 / .2); border: 1px dashed rgb(255 255 255 / .7); border-radius: 10px; padding: 10px; font-size: 12.5px; font-weight: 700; }
+    .bonus-box { display: none; border-radius: var(--radius-md); padding: 14px 16px; background: #faf5ff; border: 1.5px dashed #c084fc; }
+    .bonus-box.show { display: block; }
+    .bonus-box.done { background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%); border: 0; color: #fff; }
+    .bonus-box.claimed { background: linear-gradient(135deg, #64748b 0%, #334155 100%); }
+    .bonus-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+    .bonus-head b { font-size: 15px; font-weight: 900; }
+    .bonus-tag { flex-shrink: 0; font-size: 11px; font-weight: 800; color: #fff; background: #7c3aed; padding: 2px 8px; border-radius: 999px; }
+    .bonus-box.done .bonus-tag { background: rgb(255 255 255 / .25); }
+    .bonus-box p { font-size: 12.5px; line-height: 1.55; color: inherit; opacity: .9; }
+    .bonus-dots { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; margin-top: 10px; }
+    .bonus-dots i { height: 8px; border-radius: 4px; background: #e9d5ff; }
+    .bonus-dots i.on { background: #7c3aed; }
+    .bonus-box.done .bonus-dots i { background: rgb(255 255 255 / .5); }
+    .bonus-box .claim { margin-top: 10px; background: rgb(255 255 255 / .2); border: 1px dashed rgb(255 255 255 / .7); border-radius: 10px; padding: 9px; font-size: 12.5px; font-weight: 700; text-align: center; }
     .goal-box.claimed { background: linear-gradient(135deg, #64748b 0%, #334155 100%); box-shadow: none; }
 
     /* ---------- Scanner ---------- */
@@ -837,6 +851,16 @@
             <div class="claim" id="claimNote">본부 스태프가 교환 QR을 스캔하게 해주세요</div>
           </div>
 
+          <div class="bonus-box" id="bonusBox">
+            <div class="bonus-head">
+              <span class="bonus-tag">선착순 20명</span>
+              <b id="bonusTitle">도장 10개 모두 모으기 도전!</b>
+            </div>
+            <p id="bonusDesc"></p>
+            <div class="bonus-dots" id="bonusDots"></div>
+            <div class="claim" id="bonusNote" hidden></div>
+          </div>
+
           <div class="h-sub">📒 내 도장 기록 · 받은 순서대로</div>
           <div class="board" id="board"></div>
 
@@ -1047,6 +1071,9 @@
     const SURVEY_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScWTIvMJtfCzVtiLkfJY6yirbNrj6cK9UKMGzdJhiqzzHTC_w/viewform';
     const SURVEY_CODE = '1000';
     const CLAIM = { code: 'BJR-CLAIM-X2P9', pin: '0203' }; // 본부(1번 천막) 리워드 교환용
+    // 보너스: 도장 10개(전부)를 모으면 선착순 BONUS_LIMIT명에게 추가 상품. 남은 수량은 본부에서 관리한다.
+    const GOAL2 = 10, BONUS_LIMIT = 20;
+    const BONUS = { code: 'BJR-BONUS-K7T3', pin: '0310' }; // 본부 추가 상품 지급 확인용
 
     const QUOTES = [
       '도장을 모아 결승선으로! 🐢',
@@ -1395,7 +1422,7 @@
       });
 
       // 도장판: 받은 순서대로 칸을 채운다 (최소 GOAL칸, 넘치면 늘어남)
-      const slots = Math.max(GOAL, c);
+      const slots = c >= GOAL ? Math.max(GOAL2, c) : GOAL;
       $('#board').innerHTML = Array.from({ length: slots }, (_, i) => {
         const m = got[i];
         if (!m) return `<div class="slot"><span class="slot-ring">${i + 1}</span><span class="slot-name">빈 칸</span></div>`;
@@ -1427,6 +1454,22 @@
         ? '도장 5개를 모으고 키링을 받았어요.<br>함께 걸어줘서 고마워요!'
         : '도장 5개를 모두 모았어요!<br><strong>본부(1번 천막)</strong>에 이 화면을 보여주면<br><strong>업사이클링 키캡 키링</strong>을 무료로 드려요.';
       $('#claimNote').textContent = state.claimedAt ? `${hhmm(state.claimedAt)}에 키링을 받았어요.` : '본부 스태프에게 교환 QR 스캔을 요청하세요';
+
+      // 보너스: 5개 완주 후부터 보여준다
+      const bb = $('#bonusBox'), b10 = Math.min(c, GOAL2);
+      bb.classList.toggle('show', c >= GOAL);
+      bb.classList.toggle('done', c >= GOAL2);
+      bb.classList.toggle('claimed', !!state.bonusAt);
+      $('#bonusDots').innerHTML = Array.from({ length: GOAL2 }, (_, i) => `<i class="${i < b10 ? 'on' : ''}"></i>`).join('');
+      $('#bonusTitle').textContent = state.bonusAt ? '✅ 추가 상품 수령 완료' : c >= GOAL2 ? '🎉 도장 10개 모두 완성!' : `도장 10개 모두 모으기 도전! (${b10}/${GOAL2})`;
+      $('#bonusDesc').innerHTML = state.bonusAt
+        ? '코스와 부스를 모두 돌아본 진짜 부지런러! 고마워요.'
+        : c >= GOAL2
+          ? `<strong>본부(1번 천막)</strong>에 이 화면을 보여주세요. 선착순 ${BONUS_LIMIT}명에게 <strong>추가 상품</strong>을 드려요.<br>준비한 수량이 다 떨어지면 받을 수 없어요.`
+          : `코스 프로그램과 부스 미션 ${GOAL2}곳을 모두 돌면 <strong>선착순 ${BONUS_LIMIT}명</strong>에게 추가 상품을 드려요. ${GOAL2 - b10}곳 남았어요!`;
+      const bn = $('#bonusNote');
+      bn.hidden = c < GOAL2;
+      bn.textContent = state.bonusAt ? `${hhmm(state.bonusAt)}에 추가 상품을 받았어요.` : '본부 스태프에게 추가 상품 확인 QR 스캔을 요청하세요';
     }
 
     $('#resetBtn').addEventListener('click', () => {
@@ -1447,6 +1490,7 @@
       const mission = STAMPS.find(m => m.code === code);
       if (mission) return mission.type === 'quiz' ? openQuiz(mission) : grantStamp(mission);
       if (code === CLAIM.code) return claimReward();
+      if (code === BONUS.code) return claimBonus();
       const bm = code.match(/^BJR-B(\d{1,2})$/);
       if (bm && BOOTHS.some(b => b.n === +bm[1])) {
         go('booths');
@@ -1469,8 +1513,11 @@
       if (c === GOAL) {
         showResult({ kind: 'ok', emoji: '🏁', stampText: '완주', title: '5개의 도장을 모두 모으셨군요!', desc: '느릿느릿 걸었지만 우리는 제주를 바꾸는 커다란 한 걸음을 내디뎠어요.\n\n본부(1번 천막)에 도장판 화면을 보여주고\n업사이클링 키캡 키링을 무료로 받으세요.', again: false });
         confetti();
+      } else if (c === GOAL2) {
+        showResult({ kind: 'ok', emoji: '🏆', stampText: '10개 완성', title: '도장 10개 모두 완성!', desc: `코스와 부스를 모두 돌아봤어요!\n\n본부(1번 천막)에 도장판 화면을 보여주면\n선착순 ${BONUS_LIMIT}명에게 추가 상품을 드려요.`, again: false });
+        confetti();
       } else if (c > GOAL) {
-        showResult({ kind: 'ok', emoji: '🐢', stampText: `${c}번째`, title: '보너스 도장 쾅!', desc: `${m.title}\n이미 완주했지만 도장을 하나 더 모았어요!`, again: true });
+        showResult({ kind: 'ok', emoji: '🐢', stampText: `${c}번째`, title: '보너스 도장 쾅!', desc: `${m.title}\n${GOAL2}개 모두 모으면 선착순 ${BONUS_LIMIT}명 추가 상품! (${c}/${GOAL2})`, again: true });
       } else {
         if (m.found) showResult({ kind: 'ok', emoji: '🐢', stampText: `${c}번째`, title: m.found.title, desc: `${m.found.desc}\n(${c}번째 도장 · ${c}/${GOAL})`, again: true });
         else showResult({ kind: 'ok', emoji: '🐢', stampText: `${c}번째`, title: `${c}번째 도장 쾅!`, desc: `${m.title}\n${QUOTES[c]} (${c}/${GOAL})`, again: true });
@@ -1613,6 +1660,21 @@
       save(); renderStamps();
       vibrate([30, 40, 60]);
       showResult({ kind: 'ok', emoji: '🎁', stampText: '교환 완료', title: '키링 교환 완료!', desc: '업사이클링 키캡 키링을 받으세요.\n함께 걸어줘서 고마워요!', again: false });
+    }
+
+    function claimBonus() {
+      if (count() < GOAL2) {
+        showResult({ kind: 'warn', emoji: '🏆', stampText: `${count()}/${GOAL2}`, title: '아직 도장이 모자라요', desc: `추가 상품은 도장 ${GOAL2}개를 모두 모으면 받을 수 있어요. ${GOAL2 - count()}개 남았어요.`, again: false });
+        return;
+      }
+      if (state.bonusAt) {
+        showResult({ kind: 'warn', emoji: '🏆', stampText: '수령됨', title: '이미 추가 상품을 받았어요', desc: `${hhmm(state.bonusAt)}에 받았어요.`, again: false });
+        return;
+      }
+      state.bonusAt = Date.now();
+      save(); renderStamps();
+      vibrate([30, 40, 60]);
+      showResult({ kind: 'ok', emoji: '🏆', stampText: '수령 완료', title: '추가 상품 수령 완료!', desc: '코스와 부스를 모두 돌아본 진짜 부지런러!\n고마워요 🐢', again: false });
     }
 
     let resultAgain = false;
@@ -1800,6 +1862,7 @@
       $('#pinInput').value = '';
       if (m) return m.type === 'quiz' ? openQuiz(m) : grantStamp(m);
       if (v === CLAIM.pin) return claimReward();
+      if (v === BONUS.pin) return claimBonus();
       toast('맞지 않는 코드예요. 부스 스태프에게 다시 확인해주세요');
       vibrate(40);
     }
