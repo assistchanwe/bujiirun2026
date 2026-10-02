@@ -473,6 +473,7 @@
     .quiz-opt.right { border-color: var(--eco); background: var(--eco-light); color: var(--eco-dark); }
     .quiz-opt.wrong { border-color: #fca5a5; background: #fef2f2; color: #b91c1c; opacity: .7; animation: shake .3s; }
     @keyframes shake { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+    .quiz-back { align-self: flex-start; font-size: 13px; font-weight: 700; color: var(--primary-dark); padding: 4px 2px 6px; }
     .survey-step { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; padding-top: 12px; border-top: 1px dashed var(--line); }
     .survey-step label { font-size: 12.5px; font-weight: 700; color: var(--muted); margin-top: 4px; }
     .survey-step .pin-row input { background: #fff; color: var(--ink); border-color: var(--line); }
@@ -1046,7 +1047,7 @@
     // 제출한 사람만 그 코드를 보게 한다. 코드를 바꾸면 구글 폼 확인 메시지도 같이 바꿀 것.
     // SURVEY_URL 을 비우면 설문 단계 없이 정답만으로 도장을 준다.
     const SURVEY_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScWTIvMJtfCzVtiLkfJY6yirbNrj6cK9UKMGzdJhiqzzHTC_w/viewform';
-    const SURVEY_CODE = '4827';
+    const SURVEY_CODE = '1000';
     const CLAIM = { code: 'BJR-CLAIM-X2P9', pin: '0203' }; // 본부(1번 천막) 리워드 교환용
 
     const QUOTES = [
@@ -1501,6 +1502,18 @@
       $('#quizFeedback').textContent = '';
       $('#quizFeedback').className = 'quiz-feedback';
       $('#quizOptions').innerHTML = m.options.map((o, i) => `<button class="quiz-opt" data-i="${i}"><b>${'①②③④⑤'[i]}</b>${o}</button>`).join('');
+      // 2단계 퀴즈: 앞 질문으로 돌아가기
+      if (m.pre) {
+        const back = document.createElement('button');
+        back.className = 'quiz-back';
+        back.textContent = '← 이전 질문';
+        back.addEventListener('click', () => {
+          $('#quizFeedback').textContent = '';
+          $('#quizFeedback').className = 'quiz-feedback';
+          renderPre(m);
+        });
+        $('#quizOptions').prepend(back);
+      }
       // 이미 정답을 맞히고 설문만 남은 경우 바로 설문 단계로
       if (m.survey && SURVEY_URL && state.passed && state.passed[m.id]) {
         const right = $(`.quiz-opt[data-i="${m.answer}"]`, $('#quizOptions'));
